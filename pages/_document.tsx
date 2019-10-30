@@ -12,6 +12,10 @@ class MyDocument extends Document {
     return (
       <Html>
         <Global styles={GlobalStyles} />
+        <link
+          href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700|Rubik:700&display=swap"
+          rel="stylesheet"
+        />
         <Head />
         <body>
           <Main />

@@ -1,9 +1,11 @@
 import { css } from '@emotion/core';
+import { containerWidth, marginWidth } from './spacing';
+import { withPx, forSides } from './utility';
 
 export const ContainerStyles = css({
   width: '100%',
-  maxWidth: '996px',
-  padding: '0 32px',
-  margin: '0 auto',
+  maxWidth: containerWidth,
+  padding: forSides(withPx(marginWidth)),
+  margin: forSides('auto'),
   boxSizing: 'border-box',
 });
