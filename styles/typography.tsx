@@ -12,9 +12,10 @@ export const Typography = css({
   h1: [
     TitleFont,
     {
-      fontSize: 48,
+      fontSize: 60,
       fontWeight: 'bold',
       color: 'white',
+      lineHeight: '68px',
     },
   ],
   p: [

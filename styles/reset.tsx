@@ -6,6 +6,9 @@ export const ResetStyles = css({
     WebkitFontSmoothing: 'antialiased',
     MozOsxFontSmoothing: 'grayscale',
   },
+  '::selection': {
+    background: '#ffcb5c',
+  },
   html: {
     boxSizing: 'border-box',
   },

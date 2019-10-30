@@ -1,32 +1,57 @@
 import styled from '@emotion/styled';
 import { ContainerStyles } from '../../../styles/container';
+import { spaced } from '../../../styles/spacing';
+import { withPx, forTopAndBottom } from '../../../styles/utility';
 
-export const Root = styled.section();
+const bgImage = require('../../../public/images/hero-bg.jpg?webp&size=1400');
+const bgTransitionImage = require('../../../public/images/bg-transition.png');
 
-export const Background = styled.picture({
-  width: '100%',
-  img: {
+export const Root = styled.section({
+  backgroundImage: `url(${bgImage})`,
+  backgroundSize: '100%',
+  backgroundRepeat: 'no-repeat',
+  position: 'relative',
+  ':after': {
+    content: '""',
+    display: 'block',
+    height: '200px',
     width: '100%',
+    position: 'absolute',
+    bottom: 0,
+    backgroundImage: `url(${bgTransitionImage})`,
+    backgroundSize: '100%',
+    backgroundRepeat: 'no-repeat',
+    backgroundPositionY: '100%',
   },
 });
 
-export const AbsoluteContainer = styled.div({
-  ContainerStyles,
-  position: 'absolute',
-  top: 32,
-  left: 32,
-  right: 32,
+export const Container = styled.div([ContainerStyles], {
+  paddingTop: withPx(spaced(4)),
 });
 
 export const Header = styled.header({});
 
 export const Logo = styled.div({ width: 80 });
 
-export const ContentContainer = styled.div({});
-export const LeftContent = styled.div({});
-export const RightContent = styled.div({});
+export const ContentContainer = styled.div({
+  padding: forTopAndBottom(withPx(spaced(8))),
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+});
+
+export const LeftContent = styled.div({
+  flex: 0,
+  marginTop: withPx(-spaced(8)),
+});
+
+export const RightContent = styled.div();
+
+export const Koltron = styled.div({
+  img: { maxHeight: 400 },
+});
+
 export const Intro = styled.h1({
-  fontSize: 50,
   color: 'white',
   wordSpacing: '100vw',
 });
