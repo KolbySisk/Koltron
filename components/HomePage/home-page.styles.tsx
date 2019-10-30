@@ -1,5 +1,9 @@
 import styled from '@emotion/styled';
 
+const bgImage = require('../../images/bg.jpg?webp&size=1400');
+
 export const Root = styled.div({
-  backgroundColor: '#abc123',
+  height: '100%',
+  backgroundImage: `url(${bgImage})`,
+  backgroundSize: '100%',
 });

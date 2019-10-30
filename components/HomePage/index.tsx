@@ -1,9 +1,10 @@
 import * as HomePageStyles from './home-page.styles';
+import Hero from './Hero';
 
 const HomePageComponent = () => {
   return (
     <HomePageStyles.Root>
-      <h1>Hello World</h1>
+      <Hero />
     </HomePageStyles.Root>
   );
 };

@@ -1,5 +1,6 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document';
 import { Global } from '@emotion/core';
+import { GlobalStyles } from '../styles/global';
 
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
@@ -10,7 +11,7 @@ class MyDocument extends Document {
   render() {
     return (
       <Html>
-        {/* <Global styles={GlobalStyles} /> */}
+        <Global styles={GlobalStyles} />
         <Head />
         <body>
           <Main />
