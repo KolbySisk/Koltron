@@ -33,5 +33,6 @@ export const ResetStyles = css({
   },
   'button, a': {
     cursor: 'pointer',
+    border: 'none',
   },
 });

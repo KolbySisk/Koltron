@@ -8,8 +8,9 @@ export const Button = styled.button((props: any) => ({
   fontSize: '12px',
   fontWeight: 600,
   color: props.fontColor,
+  boxShadow: `inset 0 -2px 0 0 ${Color.primaryShadow}`,
+  transition: 'all 0.2s cubic-bezier(.25,.8,.25,1)',
   ':hover, :focus': {
-    border: `solid 1px ${Color.lightGray}`,
-    boxShadow: '0 1px 2px rgba(0,0,0,0.25), 0 1px 2px rgba(0,0,0,0.22)',
+    boxShadow: `inset 0 -50px 10px 0 ${Color.primaryShadow}`,
   },
 }));
