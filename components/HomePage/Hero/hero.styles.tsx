@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { ContainerStyles, spaced, withPx, forTopAndBottom } from '../../../styles';
+import { ContainerStyles, spaced, withPx } from '../../../styles';
 
 const bgImage = require('../../../public/images/hero-bg.jpg?webp&size=1400');
 const bgTransitionImage = require('../../../public/images/bg-transition.png');
@@ -31,7 +31,7 @@ export const Header = styled.header({});
 export const Logo = styled.div({ width: 80 });
 
 export const ContentContainer = styled.div({
-  padding: forTopAndBottom(withPx(spaced(8))),
+  paddingBottom: withPx(spaced(8)),
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
@@ -39,13 +39,12 @@ export const ContentContainer = styled.div({
 
 export const LeftContent = styled.div({
   flex: 0,
-  marginTop: withPx(-spaced(8)),
 });
 
 export const RightContent = styled.div();
 
 export const Koltron = styled.div({
-  img: { maxHeight: 400 },
+  img: { maxHeight: 350 },
 });
 
 export const Intro = styled.h1({

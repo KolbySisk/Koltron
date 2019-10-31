@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Constant, Color, withPx, forSides } from '../../styles';
+import { Constant, Color, withPx } from '../../styles';
 
 export const Button = styled.button((props: any) => ({
   backgroundColor: props.color,
