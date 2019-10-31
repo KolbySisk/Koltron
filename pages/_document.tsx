@@ -1,6 +1,6 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document';
 import { Global } from '@emotion/core';
-import { GlobalStyles } from '../styles/global';
+import { GlobalStyles } from '../styles';
 
 class MyDocument extends Document {
   static async getInitialProps(ctx) {

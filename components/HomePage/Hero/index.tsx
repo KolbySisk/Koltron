@@ -22,9 +22,6 @@ const HeroComponent = () => (
         </HeroStyles.RightContent>
       </HeroStyles.ContentContainer>
     </HeroStyles.Container>
-    {/* <HeroStyles.Background>
-      <Image imageName="hero-bg.jpg" size={1400}></Image>
-    </HeroStyles.Background> */}
   </HeroStyles.Root>
 );
 

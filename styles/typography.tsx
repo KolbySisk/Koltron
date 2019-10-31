@@ -9,6 +9,13 @@ export const BodyFont = css({
 });
 
 export const Typography = css({
+  body: [
+    BodyFont,
+    {
+      fontSize: 16,
+      lineHeight: '22px',
+    },
+  ],
   h1: [
     TitleFont,
     {
@@ -16,12 +23,6 @@ export const Typography = css({
       fontWeight: 'bold',
       color: 'white',
       lineHeight: '68px',
-    },
-  ],
-  p: [
-    BodyFont,
-    {
-      fontSize: 16,
     },
   ],
 });

@@ -13,3 +13,4 @@
 - Installed `Emotion`: https://emotion.sh/docs/install
 - Installed `Emotion SO`: https://www.styled-components.com/docs/advanced#style-objects
 - Installed `next-optimized-images`: https://github.com/cyrilwanner/next-optimized-images
+- Installed `react-icons`: https://github.com/react-icons/react-icons

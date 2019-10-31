@@ -1,7 +1,5 @@
 import styled from '@emotion/styled';
-import { ContainerStyles } from '../../../styles/container';
-import { spaced } from '../../../styles/spacing';
-import { withPx, forTopAndBottom } from '../../../styles/utility';
+import { ContainerStyles, spaced, withPx, forTopAndBottom } from '../../../styles';
 
 const bgImage = require('../../../public/images/hero-bg.jpg?webp&size=1400');
 const bgTransitionImage = require('../../../public/images/bg-transition.png');
@@ -13,7 +11,6 @@ export const Root = styled.section({
   position: 'relative',
   ':after': {
     content: '""',
-    display: 'block',
     height: '200px',
     width: '100%',
     position: 'absolute',
