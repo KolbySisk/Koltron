@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { Constant, Color, withPx } from '../../styles';
 
-export const Button = styled.button((props: any) => ({
+export const Button: any = styled.button((props: any) => ({
   backgroundColor: props.color,
   padding: `${withPx(Constant.baseSpacing * 1.5)} ${withPx(Constant.baseSpacing * 2)}`,
   borderRadius: Constant.borderRadius,

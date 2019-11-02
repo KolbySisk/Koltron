@@ -14,3 +14,5 @@
 - Installed `Emotion SO`: https://www.styled-components.com/docs/advanced#style-objects
 - Installed `next-optimized-images`: https://github.com/cyrilwanner/next-optimized-images
 - Installed `react-icons`: https://github.com/react-icons/react-icons
+- Installed `xstate`: https://xstate.js.org/docs/guides/start.html
+- Installed `lodash`: https://lodash.com/

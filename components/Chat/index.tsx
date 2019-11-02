@@ -1,13 +1,27 @@
+import { useEffect, useMemo, FormEvent } from 'react';
+import { useMachine } from '@xstate/react';
 import { MdMoreHoriz, MdArrowUpward } from 'react-icons/md';
 import * as ChatStyles from './chat.styles';
+import { createChatMachine, ChatEventType } from './chat.machine';
+import { Message } from './chat.types';
 import Button from '../Button';
 
 const ChatComponent = () => {
+  const chatMachine = useMemo(() => {
+    return createChatMachine();
+  }, []);
+
+  const [current, send] = useMachine(chatMachine);
+
+  useEffect(() => {
+    send(ChatEventType.init);
+  }, []);
+
   const optionClicked = () => {
     alert('yo');
   };
 
-  const formSubmit = event => {
+  const formSubmit = (event: FormEvent) => {
     event.preventDefault();
     alert('woop');
   };
@@ -17,20 +31,22 @@ const ChatComponent = () => {
       <ChatStyles.Container>
         <ChatStyles.MessagesContainer>
           <ChatStyles.Messages>
-            <ChatStyles.MessageContainer>
-              <ChatStyles.Message type="koltron">
-                Hello, I’m Koltron 2020. I’m an AI designed to teach people about Kolby Sisk. It’s
-                not a glamorous life, but it’s better than passing butter.
-              </ChatStyles.Message>
-            </ChatStyles.MessageContainer>
-            <ChatStyles.MessageContainer>
+            {current.context.messages &&
+              current.context.messages.map((message: Message) => (
+                <ChatStyles.MessageContainer key={message.id}>
+                  <ChatStyles.Message type="koltron">{message.content}</ChatStyles.Message>
+                </ChatStyles.MessageContainer>
+              ))}
+            {/* <ChatStyles.MessageContainer>
               <ChatStyles.Message type="user">Sup</ChatStyles.Message>
-            </ChatStyles.MessageContainer>
-            <ChatStyles.MessageContainer>
-              <ChatStyles.LoadingMessage>
-                <MdMoreHoriz size="2.5em" />
-              </ChatStyles.LoadingMessage>
-            </ChatStyles.MessageContainer>
+            </ChatStyles.MessageContainer> */}
+            {current.context.typing && (
+              <ChatStyles.MessageContainer>
+                <ChatStyles.LoadingMessage>
+                  <MdMoreHoriz size="2.5em" />
+                </ChatStyles.LoadingMessage>
+              </ChatStyles.MessageContainer>
+            )}
           </ChatStyles.Messages>
         </ChatStyles.MessagesContainer>
 
@@ -53,3 +69,10 @@ const ChatComponent = () => {
 };
 
 export default ChatComponent;
+
+/**
+ * Ideas:
+ * - When a specific question is asked to the user
+ *   change placerholder to show what they should enter.
+ *   Example, "What's your email?" - Placeholder: "Enter your email address"
+ */
