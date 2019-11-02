@@ -24,9 +24,10 @@ export interface ChatStateSchema {
 /**
  * Every event that the machine can have.
  * INIT - Tells Koltron to send the first message
- * SEND_MESSAGE - Koltron has sent a message
- * RECEIVE_MESSAGE - The user sent a message
- * RECEIVE_OPTION - The user selected an option
+ * THINK - Event sent before Koltron sends a message
+ * TALK - Event sent when Koltron sends a message
+ * LISTEN - Event sent when Koltron stops sending messages
+ * READ - Event sent when a message is sent and read by Koltron
  */
 
 export enum ChatEventType {
@@ -34,9 +35,7 @@ export enum ChatEventType {
   think = 'THINK',
   talk = 'TALK',
   listen = 'LISTEN',
-  sendMessage = 'SEND_MESSAGE',
-  receiveMessage = 'RECEIVE_MESSAGE',
-  receiveOption = 'RECEIVE_OPTION',
+  read = 'READ',
 }
 
 export type ChatEvent =
@@ -44,9 +43,7 @@ export type ChatEvent =
   | { type: ChatEventType.think }
   | { type: ChatEventType.listen }
   | { type: ChatEventType.talk; messages: Message[] }
-  | { type: ChatEventType.sendMessage; message: Message }
-  | { type: ChatEventType.receiveMessage; userMessage: string }
-  | { type: ChatEventType.receiveOption; option: Option };
+  | { type: ChatEventType.read; userMessage: string };
 
 export interface ChatContext {
   messages?: Message[];
