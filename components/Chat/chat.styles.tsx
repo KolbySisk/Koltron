@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { MessageType } from './chat.types';
 import {
   ContainerStyles,
   Color,
@@ -29,9 +30,9 @@ export const MessageContainer = styled.div({
 
 const GetMessageStyles = (type: string) => ({
   display: 'inline-flex',
-  backgroundColor: type === 'koltron' ? Color.lightGray : Color.seconday,
-  color: type === 'koltron' ? Color.black : Color.white,
-  marginLeft: type === 'koltron' ? 0 : 'auto',
+  backgroundColor: type === MessageType.koltron ? Color.lightGray : Color.seconday,
+  color: type === MessageType.koltron ? Color.black : Color.white,
+  marginLeft: type === MessageType.koltron ? 0 : 'auto',
   borderRadius: Constant.borderRadius,
   padding: withPx(Constant.baseSpacing),
   marginBottom: withPx(Constant.baseSpacing * 2),
@@ -40,7 +41,7 @@ const GetMessageStyles = (type: string) => ({
 
 export const Message = styled.div((props: any) => [GetMessageStyles(props.type)]);
 
-export const LoadingMessage = styled.div([GetMessageStyles('koltron')], {
+export const LoadingMessage = styled.div([GetMessageStyles(MessageType.koltron)], {
   color: Color.darkGray,
   padding: forSides(withPx(Constant.baseSpacing / 2)),
 });

@@ -1,10 +1,11 @@
-import { Message } from './chat.types';
+import { Message, MessageType, ChatTopic } from './chat.types';
 
 export const messages: Message[] = [];
 
 messages.push({
   id: 1,
-  mode: 'intro',
+  topic: ChatTopic.intro,
+  type: MessageType.koltron,
   content: (
     <p>
       Hello, I’m Koltron 2020. I’m an AI designed to teach people about Kolby Sisk. It’s not a
@@ -15,7 +16,8 @@ messages.push({
 
 messages.push({
   id: 2,
-  mode: 'intro',
+  topic: ChatTopic.intro,
+  type: MessageType.koltron,
   content: <p>Click on a topic that I know about, or just hangout and chat with me.</p>,
 });
 

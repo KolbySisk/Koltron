@@ -1,15 +1,14 @@
 import { Machine, assign } from 'xstate';
-import { Message, Option } from './chat.types';
+import { Message, Option, ChatTopic } from './chat.types';
 import { talk, think } from './chat.service';
-
-// UPDATES STATES
 
 /**
  * States
- * - Idle: State where Koltron is waiting for user input
- * - Talk: State where Koltron is getting the next message
- * - Think: State where Koltron is thinking about the next message to send. (Might not need this)
- * - Failed: An error happened
+ * - Idle: State before being inited
+ * - Talking: State where Koltron is getting the next message
+ * - Thinking: State where Koltron is thinking about the next message to send. Used to show typing indicator.
+ * - Listening: State where Koltron is waiting for the user to send a message
+ * - Failed: An drror happened
  */
 
 export interface ChatStateSchema {
@@ -21,6 +20,7 @@ export interface ChatStateSchema {
     failed: {};
   };
 }
+
 /**
  * Every event that the machine can have.
  * INIT - Tells Koltron to send the first message
@@ -28,6 +28,7 @@ export interface ChatStateSchema {
  * RECEIVE_MESSAGE - The user sent a message
  * RECEIVE_OPTION - The user selected an option
  */
+
 export enum ChatEventType {
   init = 'INIT',
   think = 'THINK',
@@ -47,28 +48,10 @@ export type ChatEvent =
   | { type: ChatEventType.receiveMessage; userMessage: string }
   | { type: ChatEventType.receiveOption; option: Option };
 
-/**
- * Modes:
- * - Intro
- * - Chat
- * - Hire
- * - Contact
- * Modes change the type of message Koltron will return
- * This is used for chaining a conversation together, for example:
- * When in `Contact` mode, Koltron will ask for an Email, and after receiving one, will ask for a message.
- */
-
-export enum ChatMode {
-  Intro = 'intro',
-  Chat = 'chatting',
-  Hire = 'hire',
-  Contact = 'contact',
-}
-
 export interface ChatContext {
   messages?: Message[];
   options?: Option[];
-  mode?: ChatMode;
+  topic?: ChatTopic;
   typing: boolean;
 }
 
@@ -78,7 +61,7 @@ export const createChatMachine = () =>
     initial: 'idle',
     context: {
       messages: [],
-      mode: ChatMode.Intro,
+      topic: ChatTopic.intro,
       typing: false,
     },
     states: {
@@ -87,7 +70,7 @@ export const createChatMachine = () =>
       thinking: {
         invoke: {
           id: 'thinking',
-          src: (context, event) => async callback => {
+          src: (context: ChatContext) => async callback => {
             think(context, callback);
           },
         },
@@ -96,7 +79,7 @@ export const createChatMachine = () =>
       talking: {
         invoke: {
           id: 'talking',
-          src: (context, event) => async callback => {
+          src: (context: ChatContext) => async callback => {
             talk(context, callback);
           },
         },
@@ -112,7 +95,7 @@ export const createChatMachine = () =>
         target: 'thinking',
         actions: [
           assign({
-            messages: (context, event) => event.messages,
+            messages: (context: ChatContext, event: any) => event.messages,
           }),
           assign({
             typing: false,

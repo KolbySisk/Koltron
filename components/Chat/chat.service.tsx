@@ -4,12 +4,12 @@ import { Message } from './chat.types';
 import { ChatContext } from './chat.machine';
 
 export const getNextMessage = async (context: ChatContext): Promise<Message | undefined> => {
-  const { mode } = context;
+  const { topic } = context;
   const lastMessage: Message | undefined = _.last(context.messages);
   const lastMessageId: number = lastMessage ? lastMessage.id : 0;
 
-  const modeMessages: Message[] = await messages.filter(m => m.mode === mode);
-  const message: Message | undefined = await modeMessages.find(m => m.id === lastMessageId + 1);
+  const topicMessages: Message[] = await messages.filter(m => m.topic === topic);
+  const message: Message | undefined = await topicMessages.find(m => m.id === lastMessageId + 1);
 
   return message;
 };

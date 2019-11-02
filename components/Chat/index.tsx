@@ -34,7 +34,7 @@ const ChatComponent = () => {
             {current.context.messages &&
               current.context.messages.map((message: Message) => (
                 <ChatStyles.MessageContainer key={message.id}>
-                  <ChatStyles.Message type="koltron">{message.content}</ChatStyles.Message>
+                  <ChatStyles.Message type={message.type}>{message.content}</ChatStyles.Message>
                 </ChatStyles.MessageContainer>
               ))}
             {/* <ChatStyles.MessageContainer>
