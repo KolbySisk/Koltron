@@ -1,48 +1,33 @@
-import _ from 'lodash';
-import { messages } from './messages';
 import { Message } from './chat.types';
 import { ChatContext } from './chat.machine';
-
-export const getNextMessage = async (context: ChatContext): Promise<Message | undefined> => {
-  const { topic } = context;
-  const lastMessage: Message | undefined = _.last(context.messages);
-  const lastMessageId: number = lastMessage ? lastMessage.id : 0;
-
-  const topicMessages: Message[] = await messages.filter(m => m.topic === topic);
-  const message: Message | undefined = await topicMessages.find(m => m.id === lastMessageId + 1);
-
-  return message;
-};
-
-export const fetchMessage = async (context: ChatContext): Promise<Message[]> => {
-  const message: Message | undefined = await getNextMessage(context);
-  if (message && context.messages) context.messages.push(message);
-
-  return context.messages || [];
-};
+import { getNextMessage, getMessagesWithNextMessage } from './chat.utility';
 
 export const talk = async (context: ChatContext, callback: Function) => {
-  const stillTalking = await getNextMessage(context);
+  const nextMessage: Message | undefined = await getNextMessage(context);
 
   setTimeout(async () => {
-    if (stillTalking) {
-      const messages: Message[] = await fetchMessage(context);
+    if (nextMessage) {
+      const messages: Message[] = await getMessagesWithNextMessage(context, nextMessage);
 
       callback({ type: 'TALK', messages });
     } else {
-      callback({ type: 'LISTEN', messages });
+      callback({ type: 'LISTEN' });
     }
   }, 1000);
 };
 
 export const think = async (context: ChatContext, callback: Function) => {
-  const stillTalking = await getNextMessage(context);
+  const stillTalking: Message | undefined = await getNextMessage(context);
 
   if (stillTalking) {
     setTimeout(() => {
       callback({ type: 'THINK' });
     }, 1000);
+  } else {
+    callback({ type: 'LISTEN' });
   }
 };
 
-//return new Promise<any>((resolve, reject) => {});
+export const read = async (context: ChatContext, callback: Function) => {
+  callback({ type: 'THINK' });
+};

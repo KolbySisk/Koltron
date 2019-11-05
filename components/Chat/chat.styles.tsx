@@ -80,6 +80,10 @@ export const Input = styled.input({
   '::placeholder': {
     color: Color.darkGray,
   },
+  ':disabled': {
+    background: Color.mediumGray,
+    cursor: 'not-allowed',
+  },
 });
 
 export const Submit = styled.button();

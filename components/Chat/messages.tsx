@@ -3,7 +3,8 @@ import { Message, MessageType, ChatTopic } from './chat.types';
 export const messages: Message[] = [];
 
 messages.push({
-  id: 1,
+  id: `${ChatTopic.intro}-1`,
+  order: 1,
   topic: ChatTopic.intro,
   type: MessageType.koltron,
   content: (
@@ -15,7 +16,8 @@ messages.push({
 });
 
 messages.push({
-  id: 2,
+  id: `${ChatTopic.intro}-2`,
+  order: 2,
   topic: ChatTopic.intro,
   type: MessageType.koltron,
   content: <p>Click on a topic that I know about, or just hangout and chat with me.</p>,

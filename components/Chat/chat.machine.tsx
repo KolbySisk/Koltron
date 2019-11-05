@@ -1,6 +1,6 @@
 import { Machine, assign } from 'xstate';
-import { Message, Option, ChatTopic } from './chat.types';
-import { talk, think } from './chat.service';
+import { Message, Option } from './chat.types';
+import { talk, think, read } from './chat.service';
 
 /**
  * States
@@ -16,6 +16,7 @@ export interface ChatStateSchema {
     idle: {};
     thinking: {};
     talking: {};
+    reading: {};
     listening: {};
     failed: {};
   };
@@ -43,12 +44,11 @@ export type ChatEvent =
   | { type: ChatEventType.think }
   | { type: ChatEventType.listen }
   | { type: ChatEventType.talk; messages: Message[] }
-  | { type: ChatEventType.read; userMessage: string };
+  | { type: ChatEventType.read; messages: Message[] };
 
 export interface ChatContext {
   messages?: Message[];
   options?: Option[];
-  topic?: ChatTopic;
   typing: boolean;
 }
 
@@ -58,7 +58,6 @@ export const createChatMachine = () =>
     initial: 'idle',
     context: {
       messages: [],
-      topic: ChatTopic.intro,
       typing: false,
     },
     states: {
@@ -82,8 +81,16 @@ export const createChatMachine = () =>
         },
       },
 
-      listening: {},
+      reading: {
+        invoke: {
+          id: 'reading',
+          src: (context: ChatContext) => async callback => {
+            read(context, callback);
+          },
+        },
+      },
 
+      listening: {},
       failed: {},
     },
     on: {
@@ -112,6 +119,14 @@ export const createChatMachine = () =>
         actions: [
           assign({
             typing: false,
+          }),
+        ],
+      },
+      READ: {
+        target: 'reading',
+        actions: [
+          assign({
+            messages: (context: ChatContext, event: any) => event.messages,
           }),
         ],
       },

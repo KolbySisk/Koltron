@@ -10,10 +10,10 @@
  */
 
 export enum ChatTopic {
-  intro = 'intro',
-  chat = 'chatting',
-  hire = 'hire',
-  contact = 'contact',
+  intro = 'INTRO',
+  chat = 'CHATTING',
+  hire = 'HIRE',
+  contact = 'CONTACT',
 }
 
 export enum MessageType {
@@ -22,8 +22,9 @@ export enum MessageType {
 }
 
 export interface Message {
-  id: number;
-  topic: ChatTopic;
+  id: string | number;
+  order?: number;
+  topic?: ChatTopic;
   content: JSX.Element;
   type: MessageType;
 }

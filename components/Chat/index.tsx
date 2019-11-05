@@ -1,21 +1,29 @@
-import { useEffect, useMemo, FormEvent } from 'react';
+import { useEffect, useMemo, FormEvent, useState, useRef } from 'react';
 import { useMachine } from '@xstate/react';
 import { MdMoreHoriz, MdArrowUpward } from 'react-icons/md';
 import * as ChatStyles from './chat.styles';
 import { createChatMachine, ChatEventType } from './chat.machine';
 import { Message } from './chat.types';
+import { toMessage, getMessagesWithUserMessage } from './chat.utility';
 import Button from '../Button';
 
 const ChatComponent = () => {
+  const messagesContainer = useRef(null);
+
   const chatMachine = useMemo(() => {
     return createChatMachine();
   }, []);
 
   const [current, send] = useMachine(chatMachine);
+  const [input, setInput] = useState('');
 
   useEffect(() => {
     send(ChatEventType.init);
   }, []);
+
+  useEffect(() => {
+    messagesContainer.current.scrollIntoView();
+  }, [current.context.messages]);
 
   const optionClicked = () => {
     alert('yo');
@@ -23,7 +31,14 @@ const ChatComponent = () => {
 
   const formSubmit = (event: FormEvent) => {
     event.preventDefault();
-    alert('woop');
+    if (input.length) {
+      const userMessage: Message = toMessage(input);
+      send({
+        type: ChatEventType.read,
+        messages: getMessagesWithUserMessage(current.context, userMessage),
+      });
+      setInput('');
+    }
   };
 
   return (
@@ -37,9 +52,6 @@ const ChatComponent = () => {
                   <ChatStyles.Message type={message.type}>{message.content}</ChatStyles.Message>
                 </ChatStyles.MessageContainer>
               ))}
-            {/* <ChatStyles.MessageContainer>
-              <ChatStyles.Message type="user">Sup</ChatStyles.Message>
-            </ChatStyles.MessageContainer> */}
             {current.context.typing && (
               <ChatStyles.MessageContainer>
                 <ChatStyles.LoadingMessage>
@@ -57,7 +69,14 @@ const ChatComponent = () => {
             <Button callback={optionClicked}>Send Kolby a message</Button>
           </ChatStyles.Options>
           <ChatStyles.Form onSubmit={formSubmit}>
-            <ChatStyles.Input type="text" placeholder="send Koltron a message" />
+            <ChatStyles.Input
+              type="text"
+              placeholder="send Koltron a message"
+              value={input}
+              onChange={(event: any) => setInput(event.target.value)}
+              disabled={current.value !== 'listening'}
+              ref={messagesContainer}
+            />
             <Button type="submit">
               <MdArrowUpward size="2em" />
             </Button>
