@@ -6,10 +6,16 @@ const ButtonComponent = ({
   fontColor = Color.white,
   callback,
   children,
+  disabled,
   type,
 }: Props) => {
   return (
-    <ButtonStyles.Button color={color} fontColor={fontColor} onClick={callback} type={type}>
+    <ButtonStyles.Button
+      color={color}
+      fontColor={fontColor}
+      onClick={callback}
+      type={type}
+      disabled={disabled}>
       {children}
     </ButtonStyles.Button>
   );
@@ -20,6 +26,7 @@ interface Props {
   fontColor?: string;
   callback?: Function;
   children: any;
+  disabled?: boolean;
   type?: string;
 }
 

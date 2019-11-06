@@ -11,7 +11,12 @@ import {
   forBottomAndLeft,
 } from '../../styles';
 
-export const Root = styled.section([ContainerStyles]);
+const bgImage = require('../../public/images/bg.jpg?webp&size=1400');
+
+export const Root = styled.section([ContainerStyles], {
+  backgroundImage: `url(${bgImage})`,
+  backgroundSize: '100%',
+});
 
 export const Container = styled.section();
 
@@ -36,7 +41,7 @@ const GetMessageStyles = (type: string) => ({
   borderRadius: Constant.borderRadius,
   padding: withPx(Constant.baseSpacing),
   marginBottom: withPx(Constant.baseSpacing * 2),
-  maxWidth: '95%',
+  maxWidth: '90%',
 });
 
 export const Message = styled.div((props: any) => [GetMessageStyles(props.type)]);

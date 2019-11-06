@@ -16,3 +16,6 @@
 - Installed `react-icons`: https://github.com/react-icons/react-icons
 - Installed `xstate`: https://xstate.js.org/docs/guides/start.html
 - Installed `lodash`: https://lodash.com/
+- Installed `axios`: https://github.com/axios/axios
+- Installed `Slack sdk`: https://github.com/slackapi/node-slack-sdk
+- Installed `dotenv`: https://github.com/motdotla/dotenv

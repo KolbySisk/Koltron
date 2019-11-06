@@ -1,44 +1,64 @@
+import _ from 'lodash';
 import { useEffect, useMemo, FormEvent, useState, useRef } from 'react';
 import { useMachine } from '@xstate/react';
 import { MdMoreHoriz, MdArrowUpward } from 'react-icons/md';
 import * as ChatStyles from './chat.styles';
 import { createChatMachine, ChatEventType } from './chat.machine';
-import { Message } from './chat.types';
-import { toMessage, getMessagesWithUserMessage } from './chat.utility';
+import { Message, Option, ChatTopic } from './chat.types';
+import { inputToMessage, getMessagesWithUserMessage, optionToMessage } from './chat.utility';
 import Button from '../Button';
+import { options } from './options';
 
 const ChatComponent = () => {
-  const messagesContainer = useRef(null);
-
-  const chatMachine = useMemo(() => {
-    return createChatMachine();
-  }, []);
-
+  const chatMachine = useMemo(() => createChatMachine(), []);
   const [current, send] = useMachine(chatMachine);
-  const [input, setInput] = useState('');
+  const [inputValue, setInputValue] = useState('');
+  const textInput = useRef(null);
 
   useEffect(() => {
     send(ChatEventType.init);
   }, []);
 
   useEffect(() => {
-    messagesContainer.current.scrollIntoView();
+    textInput.current.scrollIntoView();
+    setTimeout(() => {
+      textInput.current.focus();
+    });
   }, [current.context.messages]);
 
-  const optionClicked = () => {
-    alert('yo');
+  const optionClicked = (option: Option, event: MouseEvent) => {
+    event.preventDefault();
+
+    const userMessage: Message = optionToMessage(option);
+
+    send({
+      type: ChatEventType.read,
+      messages: getMessagesWithUserMessage(current.context, userMessage),
+    });
   };
 
   const formSubmit = (event: FormEvent) => {
     event.preventDefault();
-    if (input.length) {
-      const userMessage: Message = toMessage(input);
+
+    if (inputValue.length) {
+      const userMessage: Message = inputToMessage(current.context, inputValue);
+
       send({
         type: ChatEventType.read,
         messages: getMessagesWithUserMessage(current.context, userMessage),
       });
-      setInput('');
+
+      setInputValue('');
     }
+  };
+
+  const getPlaceholder = (): string => {
+    const lastMessage = _.last(current.context.messages);
+
+    if (lastMessage?.id === `${ChatTopic.contact}-1`) return 'Enter your email';
+    if (lastMessage?.id === `${ChatTopic.contact}-2`) return 'Enter your message for Kolby';
+
+    return 'Send Koltron a message';
   };
 
   return (
@@ -46,9 +66,8 @@ const ChatComponent = () => {
       <ChatStyles.Container>
         <ChatStyles.MessagesContainer>
           <ChatStyles.Messages>
-            {current.context.messages &&
-              current.context.messages.map((message: Message) => (
-                <ChatStyles.MessageContainer key={message.id}>
+            {current?.context?.messages?.map((message: Message, index: number) => (
+                <ChatStyles.MessageContainer key={index}>
                   <ChatStyles.Message type={message.type}>{message.content}</ChatStyles.Message>
                 </ChatStyles.MessageContainer>
               ))}
@@ -61,23 +80,27 @@ const ChatComponent = () => {
             )}
           </ChatStyles.Messages>
         </ChatStyles.MessagesContainer>
-
         <ChatStyles.InputContainer>
           <ChatStyles.Options>
-            <Button callback={optionClicked}>Tell me more about Kolby</Button>
-            <Button callback={optionClicked}>Show me Kolby's favorite project</Button>
-            <Button callback={optionClicked}>Send Kolby a message</Button>
+            {options?.map((option: Option) => (
+              <Button
+                key={option.id}
+                callback={(event: MouseEvent) => optionClicked(option, event)}
+                disabled={current.value !== 'listening'}>
+                {option.text}
+              </Button>
+            ))}
           </ChatStyles.Options>
           <ChatStyles.Form onSubmit={formSubmit}>
             <ChatStyles.Input
               type="text"
-              placeholder="send Koltron a message"
-              value={input}
-              onChange={(event: any) => setInput(event.target.value)}
+              placeholder={getPlaceholder()}
+              value={inputValue}
+              onChange={(event: any) => setInputValue(event.target.value)}
               disabled={current.value !== 'listening'}
-              ref={messagesContainer}
+              ref={textInput}
             />
-            <Button type="submit">
+            <Button type="submit" disabled={current.value !== 'listening'}>
               <MdArrowUpward size="2em" />
             </Button>
           </ChatStyles.Form>
@@ -88,10 +111,3 @@ const ChatComponent = () => {
 };
 
 export default ChatComponent;
-
-/**
- * Ideas:
- * - When a specific question is asked to the user
- *   change placerholder to show what they should enter.
- *   Example, "What's your email?" - Placeholder: "Enter your email address"
- */

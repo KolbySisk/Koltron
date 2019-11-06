@@ -1,6 +1,8 @@
 import { Message } from './chat.types';
-import { ChatContext } from './chat.machine';
+import { ChatContext, ChatEventType } from './chat.machine';
 import { getNextMessage, getMessagesWithNextMessage } from './chat.utility';
+
+const defaultDelay = 1000;
 
 export const talk = async (context: ChatContext, callback: Function) => {
   const nextMessage: Message | undefined = await getNextMessage(context);
@@ -9,25 +11,25 @@ export const talk = async (context: ChatContext, callback: Function) => {
     if (nextMessage) {
       const messages: Message[] = await getMessagesWithNextMessage(context, nextMessage);
 
-      callback({ type: 'TALK', messages });
+      callback({ type: ChatEventType.talk, messages });
     } else {
-      callback({ type: 'LISTEN' });
+      callback({ type: ChatEventType.listen });
     }
-  }, 1000);
+  }, nextMessage.delay || defaultDelay);
 };
 
 export const think = async (context: ChatContext, callback: Function) => {
-  const stillTalking: Message | undefined = await getNextMessage(context);
+  const nextMessage: Message | undefined = await getNextMessage(context);
 
-  if (stillTalking) {
+  if (nextMessage) {
     setTimeout(() => {
-      callback({ type: 'THINK' });
-    }, 1000);
+      callback({ type: ChatEventType.think });
+    }, 500);
   } else {
-    callback({ type: 'LISTEN' });
+    callback({ type: ChatEventType.listen });
   }
 };
 
 export const read = async (context: ChatContext, callback: Function) => {
-  callback({ type: 'THINK' });
+  callback({ type: ChatEventType.think });
 };

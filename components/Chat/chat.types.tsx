@@ -12,7 +12,8 @@
 export enum ChatTopic {
   intro = 'INTRO',
   chat = 'CHATTING',
-  hire = 'HIRE',
+  about = 'ABOUT',
+  favorite = 'FAVORITE',
   contact = 'CONTACT',
 }
 
@@ -21,15 +22,41 @@ export enum MessageType {
   koltron = 'KOLTRON',
 }
 
+/**
+ * Messages are sent based on the current `topic` and `order`.
+ * `order` is the order in which Koltron sends the message.
+ * `type` determins how the message is styled. (Sent vs Received styles).
+ * `delay` is pause before sending the message.
+ * `option` indicates that the message was generated from an `Option`.
+ * `question` used to tell Koltron to wait for an answer.
+ * `answer` indicates that the message is an answer to a previously asked question.
+ * `finish` indicates that a chain of questioning has ended.
+ * `logic` a function used to determine the next message. Must return a messageId
+ * `action` a function that is ran when a message is sent.
+ */
+
 export interface Message {
-  id: string | number;
-  order?: number;
-  topic?: ChatTopic;
+  id: string;
   content: JSX.Element;
+  order?: number;
   type: MessageType;
+  topic?: ChatTopic;
+  delay?: number;
+  option?: boolean;
+  question?: boolean;
+  answer?: boolean;
+  finish?: boolean;
+  logic?: Function;
+  action?: Function;
 }
 
+/**
+ * Options are buttons that display predefined messages.
+ * Options are used to change the topic, or respond to Koltron.
+ */
+
 export interface Option {
-  name: string;
+  id: string;
+  topic: ChatTopic;
   text: string;
 }

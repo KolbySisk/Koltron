@@ -135,5 +135,6 @@ export const createChatMachine = () =>
 
 /**
  * TODO:
+ * - Investigate using guards to manage the think/talk transitions - https://xstate.js.org/docs/guides/guards.html#guard-functions
  * - Investigate refactoring to TypeStates when theyre stable: https://xstate.js.org/docs/guides/typescript.html#typestates
  */
