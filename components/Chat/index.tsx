@@ -66,7 +66,7 @@ const ChatComponent = () => {
       <ChatStyles.Container>
         <ChatStyles.MessagesContainer>
           <ChatStyles.Messages>
-            {current?.context?.messages?.map((message: Message, index: number) => (
+            {current.context.messages.map((message: Message, index: number) => (
                 <ChatStyles.MessageContainer key={index}>
                   <ChatStyles.Message type={message.type}>{message.content}</ChatStyles.Message>
                 </ChatStyles.MessageContainer>

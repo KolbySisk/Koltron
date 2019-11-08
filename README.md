@@ -19,3 +19,4 @@
 - Installed `axios`: https://github.com/axios/axios
 - Installed `Slack sdk`: https://github.com/slackapi/node-slack-sdk
 - Installed `dotenv`: https://github.com/motdotla/dotenv
+- Installed `emotion-theming`: https://emotion.sh/docs/theming

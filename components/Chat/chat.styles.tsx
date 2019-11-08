@@ -13,19 +13,35 @@ import {
 
 const bgImage = require('../../public/images/bg.jpg?webp&size=1400');
 
-export const Root = styled.section([ContainerStyles], {
-  backgroundImage: `url(${bgImage})`,
-  backgroundSize: '100%',
-});
+export const Root: any = styled.section((props: any) => [
+  [ContainerStyles],
+  {
+    backgroundImage: `url(${bgImage})`,
+    backgroundSize: '100%',
+  },
+  !props.theme.home && {
+    position: 'fixed',
+    maxWidth: '100%',
+    width: 500,
+    bottom: 16,
+    right: 0,
+  },
+]);
 
 export const Container = styled.section();
 
-export const MessagesContainer = styled.div({
-  backgroundColor: Color.white,
-  borderRadius: forTopAndRight(withPx(Constant.borderRadius)),
-  padding: forTopLeftRight(withPx(Constant.baseSpacing * 3)),
-  paddingBottom: withPx(Constant.baseSpacing),
-});
+export const MessagesContainer = styled.div((props: any) => [
+  {
+    backgroundColor: Color.white,
+    borderRadius: forTopAndRight(withPx(Constant.borderRadius)),
+    padding: forTopLeftRight(withPx(Constant.baseSpacing * 3)),
+    paddingBottom: withPx(Constant.baseSpacing),
+  },
+  !props.theme.home && {
+    height: 300,
+    overflow: 'auto',
+  },
+]);
 
 export const Messages = styled.div();
 
@@ -62,6 +78,7 @@ export const Options = styled.div({
   marginBottom: withPx(Constant.baseSpacing * 2),
   button: {
     marginRight: withPx(Constant.baseSpacing * 1.5),
+    textAlign: 'left',
   },
 });
 

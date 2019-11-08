@@ -18,6 +18,7 @@
     "axios": "^0.19.0",
     "dotenv": "^8.2.0",
     "email-validator": "^2.0.4",
+    "emotion-theming": "^10.0.19",
     "imagemin-mozjpeg": "^8.0.0",
     "imagemin-optipng": "^7.1.0",
     "imagemin-svgo": "^7.0.0",
