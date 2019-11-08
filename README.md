@@ -20,3 +20,4 @@
 - Installed `Slack sdk`: https://github.com/slackapi/node-slack-sdk
 - Installed `dotenv`: https://github.com/motdotla/dotenv
 - Installed `emotion-theming`: https://emotion.sh/docs/theming
+- Installed `react-scroll`: https://github.com/fisshy/react-scroll

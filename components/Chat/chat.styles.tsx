@@ -11,20 +11,19 @@ import {
   forBottomAndLeft,
 } from '../../styles';
 
-const bgImage = require('../../public/images/bg.jpg?webp&size=1400');
-
 export const Root: any = styled.section((props: any) => [
   [ContainerStyles],
-  {
-    backgroundImage: `url(${bgImage})`,
-    backgroundSize: '100%',
-  },
   !props.theme.home && {
     position: 'fixed',
     maxWidth: '100%',
     width: 500,
     bottom: 16,
     right: 0,
+  },
+  {
+    '*': {
+      transition: 'all 1s linear',
+    },
   },
 ]);
 
@@ -86,7 +85,6 @@ export const Form = styled.form({
   display: 'flex',
   alignItems: 'flex-start',
   button: {
-    display: 'inline-flex',
     padding: withPx(Constant.baseSpacing / 2),
   },
 });

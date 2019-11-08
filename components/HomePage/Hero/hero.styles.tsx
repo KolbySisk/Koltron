@@ -19,6 +19,7 @@ export const Root = styled.section({
     backgroundSize: '100%',
     backgroundRepeat: 'no-repeat',
     backgroundPositionY: '100%',
+    pointerEvents: 'none',
   },
 });
 
@@ -30,12 +31,18 @@ export const Header = styled.header({});
 
 export const Logo = styled.div({ width: 80 });
 
-export const ContentContainer = styled.div({
-  paddingBottom: withPx(spaced(8)),
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-});
+export const ContentContainer = styled.div((props: any) => [
+  {
+    paddingTop: withPx(spaced(4)),
+    paddingBottom: withPx(spaced(8)),
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  !props.theme.home && {
+    opacity: 0,
+  },
+]);
 
 export const LeftContent = styled.div({
   flex: 0,
@@ -50,4 +57,5 @@ export const Koltron = styled.div({
 export const Intro = styled.h1({
   color: 'white',
   wordSpacing: '100vw',
+  marginBottom: spaced(4),
 });
