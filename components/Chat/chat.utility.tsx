@@ -112,3 +112,12 @@ export const sendContactMessage = (context: ChatContext) => {
     message,
   });
 };
+
+export const getPlaceholder = (context: ChatContext): string => {
+  const lastMessage: Message = _.last(context.messages);
+
+  if (lastMessage?.id === `${ChatTopic.contact}-1`) return 'Enter your email';
+  if (lastMessage?.id === `${ChatTopic.contact}-2`) return 'Enter your message for Kolby';
+
+  return 'Send Koltron a message';
+};

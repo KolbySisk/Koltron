@@ -95,6 +95,14 @@ export const createChatMachine = () =>
     },
     on: {
       INIT: { target: 'thinking' },
+      THINK: {
+        target: 'talking',
+        actions: [
+          assign({
+            typing: true,
+          }),
+        ],
+      },
       TALK: {
         target: 'thinking',
         actions: [
@@ -103,14 +111,6 @@ export const createChatMachine = () =>
           }),
           assign({
             typing: false,
-          }),
-        ],
-      },
-      THINK: {
-        target: 'talking',
-        actions: [
-          assign({
-            typing: true,
           }),
         ],
       },

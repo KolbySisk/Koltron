@@ -5,7 +5,7 @@ import { MdMoreHoriz, MdArrowUpward } from 'react-icons/md';
 import * as ChatStyles from './chat.styles';
 import { createChatMachine, ChatEventType } from './chat.machine';
 import { Message, Option, ChatTopic } from './chat.types';
-import { inputToMessage, getMessagesWithUserMessage, optionToMessage } from './chat.utility';
+import { inputToMessage, getMessagesWithUserMessage, optionToMessage, getPlaceholder } from './chat.utility';
 import Button from '../Button';
 import { options } from './options';
 
@@ -52,15 +52,6 @@ const ChatComponent = () => {
     }
   };
 
-  const getPlaceholder = (): string => {
-    const lastMessage = _.last(current.context.messages);
-
-    if (lastMessage?.id === `${ChatTopic.contact}-1`) return 'Enter your email';
-    if (lastMessage?.id === `${ChatTopic.contact}-2`) return 'Enter your message for Kolby';
-
-    return 'Send Koltron a message';
-  };
-
   return (
     <ChatStyles.Root>
       <ChatStyles.Container>
@@ -94,7 +85,7 @@ const ChatComponent = () => {
           <ChatStyles.Form onSubmit={formSubmit}>
             <ChatStyles.Input
               type="text"
-              placeholder={getPlaceholder()}
+              placeholder={getPlaceholder(current.context)}
               value={inputValue}
               onChange={(event: any) => setInputValue(event.target.value)}
               disabled={current.value !== 'listening'}
