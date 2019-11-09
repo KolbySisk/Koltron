@@ -4,7 +4,7 @@ import * as HeroStyles from './hero.styles';
 import Button from '../Button';
 import { spaced, Color } from '../../styles';
 
-const HeroComponent = () => {
+const HeroComponent = ({ updatePage }: Props) => {
   const router = useRouter();
 
   const chatClicked = () => {
@@ -14,6 +14,13 @@ const HeroComponent = () => {
   const workClicked = event => {
     event.preventDefault();
     router.push(Router.pathname, `/work/`, { shallow: true });
+    updatePage('work');
+  };
+
+  const logoClicked = event => {
+    event.preventDefault();
+    router.push(Router.pathname, `/`);
+    updatePage(undefined);
   };
 
   return (
@@ -21,6 +28,7 @@ const HeroComponent = () => {
       <HeroStyles.Container>
         <HeroStyles.Header>
           <HeroStyles.Logo
+            onClick={logoClicked}
             dangerouslySetInnerHTML={{
               __html: require('../../public/images/logo-white.svg?include&size=80'),
             }}
@@ -58,5 +66,9 @@ const HeroComponent = () => {
     </HeroStyles.Root>
   );
 };
+
+interface Props {
+  updatePage: Function;
+}
 
 export default HeroComponent;

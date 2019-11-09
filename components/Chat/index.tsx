@@ -1,4 +1,4 @@
-import { useEffect, useMemo, FormEvent, useState, useRef } from 'react';
+import { useEffect, useMemo, FormEvent, useState, useRef, useContext } from 'react';
 import { MdMoreHoriz, MdArrowUpward } from 'react-icons/md';
 import { useMachine } from '@xstate/react';
 import { useTheme } from 'emotion-theming';
@@ -10,6 +10,7 @@ import { Message, Option, ChatTopic } from './chat.types';
 import { inputToMessage, getMessagesWithUserMessage, optionToMessage, getPlaceholder } from './chat.utility';
 import Button from '../Button';
 import { options } from './options';
+import { AppContext} from '../../layouts/app/app.context';
 
 const ChatComponent = () => {
   const chatMachine = useMemo(() => createChatMachine(), []);
@@ -17,10 +18,15 @@ const ChatComponent = () => {
   const [inputValue, setInputValue] = useState('');
   const textInput = useRef(null);
   const theme: any = useTheme();
+  const context = useContext(AppContext)
 
   useEffect(() => {
     send(ChatEventType.init);
   }, []);
+
+  useEffect(() => {
+    console.log(context.home);
+  }, [context]);
 
   useEffect(() => {
     if(theme.home){

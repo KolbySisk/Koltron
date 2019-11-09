@@ -13,17 +13,15 @@ import {
 
 export const Root: any = styled.section((props: any) => [
   [ContainerStyles],
+  {
+    transition: 'all .3s linear',
+  },
   !props.theme.home && {
     position: 'fixed',
     maxWidth: '100%',
     width: 500,
     bottom: 16,
     right: 0,
-  },
-  {
-    '*': {
-      transition: 'all 1s linear',
-    },
   },
 ]);
 
