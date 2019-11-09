@@ -67,11 +67,7 @@ const ChatComponent = () => {
   };
 
   return (
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
       <ChatStyles.Root>
         <ChatStyles.Container>
           <ChatStyles.MessagesContainer id="message-continer">
@@ -117,7 +113,7 @@ const ChatComponent = () => {
           </ChatStyles.InputContainer>
         </ChatStyles.Container>
       </ChatStyles.Root>
-      </motion.div>
+    </motion.div>
 
   );
 };
