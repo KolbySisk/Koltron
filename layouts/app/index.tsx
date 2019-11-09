@@ -1,20 +1,15 @@
 import { useRouter } from 'next/router';
 import { ThemeProvider } from 'emotion-theming';
-import * as HomePageStyles from './home-page.styles';
-import Hero from './Hero';
-import Chat from '../Chat';
-import { useEffect } from 'react';
+import * as AppStyles from './app.styles';
+import Hero from '../../components/Hero';
+import Chat from '../../components/Chat';
 
 const HomePageComponent = () => {
   const router = useRouter();
   const { page } = router.query;
 
-  useEffect(() => {
-    console.log(page);
-  }, [page]);
-
   return (
-    <HomePageStyles.Root>
+    <AppStyles.Root>
       <ThemeProvider
         theme={{
           home: page === undefined,
@@ -22,7 +17,7 @@ const HomePageComponent = () => {
         <Hero />
         <Chat />
       </ThemeProvider>
-    </HomePageStyles.Root>
+    </AppStyles.Root>
   );
 };
 

@@ -1,8 +1,8 @@
 import Router, { useRouter } from 'next/router';
 import { FaCommentDots, FaThLarge } from 'react-icons/fa';
 import * as HeroStyles from './hero.styles';
-import Button from '../../Button';
-import { spaced, Color } from '../../../styles';
+import Button from '../Button';
+import { spaced, Color } from '../../styles';
 
 const HeroComponent = () => {
   const router = useRouter();
@@ -22,7 +22,7 @@ const HeroComponent = () => {
         <HeroStyles.Header>
           <HeroStyles.Logo
             dangerouslySetInnerHTML={{
-              __html: require('../../../public/images/logo-white.svg?include&size=80'),
+              __html: require('../../public/images/logo-white.svg?include&size=80'),
             }}
           />
         </HeroStyles.Header>
@@ -46,10 +46,10 @@ const HeroComponent = () => {
             <HeroStyles.Koltron>
               <picture>
                 <source
-                  srcSet={require(`../../../public/images/placeholder-robot.png?webp&size=600`)}
+                  srcSet={require(`../../public/images/placeholder-robot.png?webp&size=600`)}
                   type="image/webp"
                 />
-                <img src={require(`../../../public/images/placeholder-robot.png?size=600`)} />
+                <img src={require(`../../public/images/placeholder-robot.png?size=600`)} />
               </picture>
             </HeroStyles.Koltron>
           </HeroStyles.RightContent>

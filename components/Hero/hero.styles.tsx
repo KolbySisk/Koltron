@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
-import { ContainerStyles, spaced, withPx } from '../../../styles';
+import { ContainerStyles, spaced, withPx } from '../../styles';
 
-const bgImage = require('../../../public/images/hero-bg.jpg?webp&size=1400');
-const bgTransitionImage = require('../../../public/images/bg-transition.png');
+const bgImage = require('../../public/images/hero-bg.jpg?webp&size=1400');
+const bgTransitionImage = require('../../public/images/bg-transition.png');
 
 export const Root = styled.section({
   backgroundImage: `url(${bgImage})`,
