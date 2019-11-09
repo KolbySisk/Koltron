@@ -1,7 +1,9 @@
-import _ from 'lodash';
 import { useEffect, useMemo, FormEvent, useState, useRef } from 'react';
-import { useMachine } from '@xstate/react';
 import { MdMoreHoriz, MdArrowUpward } from 'react-icons/md';
+import { useMachine } from '@xstate/react';
+import { useTheme } from 'emotion-theming';
+import { animateScroll as scroll } from "react-scroll";
+import _ from 'lodash';
 import * as ChatStyles from './chat.styles';
 import { createChatMachine, ChatEventType } from './chat.machine';
 import { Message, Option, ChatTopic } from './chat.types';
@@ -14,16 +16,27 @@ const ChatComponent = () => {
   const [current, send] = useMachine(chatMachine);
   const [inputValue, setInputValue] = useState('');
   const textInput = useRef(null);
+  const theme: any = useTheme();
 
   useEffect(() => {
     send(ChatEventType.init);
   }, []);
 
   useEffect(() => {
-    textInput.current.scrollIntoView();
-    setTimeout(() => {
-      textInput.current.focus();
-    });
+    if(theme.home){
+      scroll.scrollToBottom({duration: 1000, delay: 0});
+      textInput.current.scrollIntoView();
+      setTimeout(() => {
+        textInput.current.focus();
+      });
+    }
+    else{
+      scroll.scrollToBottom({
+        containerId: "message-continer",
+        duration: 100,
+        delay: 0
+      });
+    }
   }, [current.context.messages]);
 
   const optionClicked = (option: Option, event: MouseEvent) => {
@@ -55,9 +68,9 @@ const ChatComponent = () => {
   return (
     <ChatStyles.Root>
       <ChatStyles.Container>
-        <ChatStyles.MessagesContainer>
+        <ChatStyles.MessagesContainer id="message-continer">
           <ChatStyles.Messages>
-            {current?.context?.messages?.map((message: Message, index: number) => (
+            {current.context.messages.map((message: Message, index: number) => (
                 <ChatStyles.MessageContainer key={index}>
                   <ChatStyles.Message type={message.type}>{message.content}</ChatStyles.Message>
                 </ChatStyles.MessageContainer>

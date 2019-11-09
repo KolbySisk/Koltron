@@ -5,7 +5,7 @@ import HomePageComponent from '../components/HomePage';
 const Home = () => (
   <>
     <Head>
-      <title>Kolby Sisk - An interactive portfolio featuring Koltron2020</title>
+      <title>Kolby Sisk - An interactive portfolio featuring Koltron</title>
     </Head>
     <HomePageComponent />
   </>

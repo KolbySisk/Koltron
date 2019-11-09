@@ -1,3 +1,5 @@
+import * as color from 'color';
+
 export const Color = {
   primary: '#605cff',
   primaryShadow: '#413fb1',
@@ -9,3 +11,5 @@ export const Color = {
   mediumGray: '#dadada',
   darkGray: '#787878',
 };
+
+export const ColorUtil = color;

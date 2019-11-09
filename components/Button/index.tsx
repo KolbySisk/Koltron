@@ -8,6 +8,7 @@ const ButtonComponent = ({
   children,
   disabled,
   type,
+  icon,
 }: Props) => {
   return (
     <ButtonStyles.Button
@@ -15,7 +16,8 @@ const ButtonComponent = ({
       fontColor={fontColor}
       onClick={callback}
       type={type}
-      disabled={disabled}>
+      disabled={disabled}
+      icon={icon}>
       {children}
     </ButtonStyles.Button>
   );
@@ -28,6 +30,7 @@ interface Props {
   children: any;
   disabled?: boolean;
   type?: string;
+  icon?: boolean;
 }
 
 export default ButtonComponent;
