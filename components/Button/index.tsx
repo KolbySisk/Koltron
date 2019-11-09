@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import * as ButtonStyles from './button.styles';
 import { Color } from '../../styles';
 
@@ -9,17 +10,34 @@ const ButtonComponent = ({
   disabled,
   type,
   icon,
+  href,
 }: Props) => {
   return (
-    <ButtonStyles.Button
-      color={color}
-      fontColor={fontColor}
-      onClick={callback}
-      type={type}
-      disabled={disabled}
-      icon={icon}>
-      {children}
-    </ButtonStyles.Button>
+    <>
+      {href ? (
+        <Link href={href} passHref>
+          <ButtonStyles.AnchorButton
+            color={color}
+            fontColor={fontColor}
+            onClick={callback}
+            type={type}
+            disabled={disabled}
+            icon={icon}>
+            {children}
+          </ButtonStyles.AnchorButton>
+        </Link>
+      ) : (
+        <ButtonStyles.Button
+          color={color}
+          fontColor={fontColor}
+          onClick={callback}
+          type={type}
+          disabled={disabled}
+          icon={icon}>
+          {children}
+        </ButtonStyles.Button>
+      )}
+    </>
   );
 };
 
@@ -31,6 +49,7 @@ interface Props {
   disabled?: boolean;
   type?: string;
   icon?: boolean;
+  href?: string;
 }
 
 export default ButtonComponent;

@@ -1,19 +1,11 @@
-import Router, { useRouter } from 'next/router';
 import { FaCommentDots, FaThLarge } from 'react-icons/fa';
 import * as HeroStyles from './hero.styles';
 import Button from '../Button';
 import { spaced, Color } from '../../styles';
 
 const HeroComponent = () => {
-  const router = useRouter();
-
   const chatClicked = () => {
     alert('yo');
-  };
-
-  const workClicked = event => {
-    event.preventDefault();
-    router.push(Router.pathname, `/work/`, { shallow: true });
   };
 
   return (
@@ -34,11 +26,8 @@ const HeroComponent = () => {
                 Chat with Koltron <FaCommentDots size="1.3em" />
               </Button>
             </span>
-            <Button
-              callback={workClicked}
-              color={Color.white}
-              fontColor={Color.primary}
-              icon={true}>
+
+            <Button color={Color.white} fontColor={Color.primary} icon={true} href="/work">
               View work <FaThLarge size="1.3em" />
             </Button>
           </HeroStyles.LeftContent>

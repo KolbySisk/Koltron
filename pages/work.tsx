@@ -1,14 +1,14 @@
 import React from 'react';
 import Head from 'next/head';
-import HomeLayout from '../layouts/home';
+import WorkLayout from '../layouts/work';
 
-const Home = () => (
+const Work = () => (
   <>
     <Head>
       <title>Kolby Sisk - An interactive portfolio featuring Koltron</title>
     </Head>
-    <HomeLayout />
+    <WorkLayout />
   </>
 );
 
-export default Home;
+export default Work;

@@ -25,4 +25,13 @@ export const Typography = css({
       lineHeight: '68px',
     },
   ],
+  'a, button': [
+    BodyFont,
+    {
+      fontSize: '13px',
+      fontWeight: 600,
+      lineHeight: 'normal',
+      textDecoration: 'none',
+    },
+  ],
 });

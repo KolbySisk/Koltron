@@ -1,15 +1,13 @@
 import styled from '@emotion/styled';
 import { Constant, Color, withPx, spaced, ColorUtil } from '../../styles';
 
-export const Button: any = styled.button((props: any) => [
+const buttonStyles = (props: any): any[] => [
   {
     display: 'inline-flex',
     alignItems: 'center',
     backgroundColor: props.color,
     padding: `${withPx(Constant.baseSpacing * 1.5)} ${withPx(Constant.baseSpacing * 2)}`,
     borderRadius: Constant.borderRadius,
-    fontSize: '12px',
-    fontWeight: 600,
     color: props.fontColor,
     position: 'relative',
     boxShadow: `inset 0 -2px 0 0 ${ColorUtil(props.color).darken(0.1)}`,
@@ -36,4 +34,7 @@ export const Button: any = styled.button((props: any) => [
       marginLeft: spaced(1.5),
     },
   },
-]);
+];
+
+export const Button: any = styled.button((props: any) => buttonStyles(props));
+export const AnchorButton: any = styled.a((props: any) => buttonStyles(props));

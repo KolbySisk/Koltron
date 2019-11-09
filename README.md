@@ -21,3 +21,9 @@
 - Installed `dotenv`: https://github.com/motdotla/dotenv
 - Installed `emotion-theming`: https://emotion.sh/docs/theming
 - Installed `react-scroll`: https://github.com/fisshy/react-scroll
+- Installed `framer-motion`: https://github.com/framer/motion
+
+## Topics of interest
+
+- Xstate
+- Combining Emotion and Framer Motion
