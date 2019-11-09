@@ -4,22 +4,22 @@ import * as HeroStyles from './hero.styles';
 import Button from '../Button';
 import { spaced, Color } from '../../styles';
 
-const HeroComponent = () => {
+const HeroComponent = ({ initChat }: Props) => {
   const chatClicked = () => {
-    alert('yo');
+    initChat();
   };
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-      <HeroStyles.Root>
-        <HeroStyles.Container>
-          <HeroStyles.Header>
-            <HeroStyles.Logo
-              dangerouslySetInnerHTML={{
-                __html: require('../../public/images/logo-white.svg?include&size=80'),
-              }}
-            />
-          </HeroStyles.Header>
+    <HeroStyles.Root>
+      <HeroStyles.Container>
+        <HeroStyles.Header>
+          <HeroStyles.Logo
+            dangerouslySetInnerHTML={{
+              __html: require('../../public/images/logo-white.svg?include&size=80'),
+            }}
+          />
+        </HeroStyles.Header>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
           <HeroStyles.ContentContainer>
             <HeroStyles.LeftContent>
               <HeroStyles.Intro>Bold Creative Experiences</HeroStyles.Intro>
@@ -28,7 +28,6 @@ const HeroComponent = () => {
                   Chat with Koltron <FaCommentDots size="1.3em" />
                 </Button>
               </span>
-
               <Button color={Color.white} fontColor={Color.primary} icon={true} href="/work">
                 View work <FaThLarge size="1.3em" />
               </Button>
@@ -45,10 +44,14 @@ const HeroComponent = () => {
               </HeroStyles.Koltron>
             </HeroStyles.RightContent>
           </HeroStyles.ContentContainer>
-        </HeroStyles.Container>
-      </HeroStyles.Root>
-    </motion.div>
+        </motion.div>
+      </HeroStyles.Container>
+    </HeroStyles.Root>
   );
 };
+
+interface Props {
+  initChat?: Function;
+}
 
 export default HeroComponent;

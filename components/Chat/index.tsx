@@ -12,7 +12,7 @@ import { inputToMessage, getMessagesWithUserMessage, optionToMessage, getPlaceho
 import Button from '../Button';
 import { options } from './options';
 
-const ChatComponent = () => {
+const ChatComponent = ({chatInit}: Props) => {
   const chatMachine = useMemo(() => createChatMachine(), []);
   const [current, send] = useMachine(chatMachine);
   const [inputValue, setInputValue] = useState('');
@@ -20,8 +20,8 @@ const ChatComponent = () => {
   const theme: any = useTheme();
 
   useEffect(() => {
-    send(ChatEventType.init);
-  }, []);
+    if(chatInit) send(ChatEventType.init);
+  }, [chatInit]);
 
   useEffect(() => {
     if(theme.home){
@@ -117,5 +117,9 @@ const ChatComponent = () => {
 
   );
 };
+
+interface Props {
+  chatInit?: boolean;
+}
 
 export default ChatComponent;
