@@ -6,7 +6,7 @@ import Chat from '../../components/Chat';
 const WorkLayout = () => {
   return (
     <WorkStyles.Root>
-      <ThemeProvider theme={{ home: false }}>
+      <ThemeProvider theme={{ smallChat: true, home: false }}>
         <Hero />
         <Chat />
       </ThemeProvider>

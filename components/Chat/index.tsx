@@ -3,11 +3,11 @@ import { MdMoreHoriz, MdArrowUpward } from 'react-icons/md';
 import { useMachine } from '@xstate/react';
 import { useTheme } from 'emotion-theming';
 import { animateScroll as scroll } from "react-scroll";
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import _ from 'lodash';
 import * as ChatStyles from './chat.styles';
 import { createChatMachine, ChatEventType } from './chat.machine';
-import { Message, Option, ChatTopic } from './chat.types';
+import { Message, Option } from './chat.types';
 import { inputToMessage, getMessagesWithUserMessage, optionToMessage, getPlaceholder } from './chat.utility';
 import Button from '../Button';
 import { options } from './options';
@@ -24,18 +24,17 @@ const ChatComponent = ({chatInit}: Props) => {
   }, [chatInit]);
 
   useEffect(() => {
-    if(theme.home){
-      scroll.scrollToBottom({duration: 1000, delay: 0});
-      textInput.current.scrollIntoView();
-      setTimeout(() => {
-        textInput.current.focus();
-      });
-    }
-    else{
+    if(theme.smallChat){
       scroll.scrollToBottom({
         containerId: "message-continer",
         duration: 100,
         delay: 0
+      });
+    }
+    else{
+      scroll.scrollToBottom({duration: 1000, delay: 0});
+      setTimeout(() => {
+        textInput.current.focus();
       });
     }
   }, [current.context.messages]);
@@ -66,9 +65,17 @@ const ChatComponent = ({chatInit}: Props) => {
     }
   };
 
+  
+  // animation controls: https://www.framer.com/api/motion/animation/#animation-controls 
+  // variants: https://www.framer.com/api/motion/animation/#variants
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-      <ChatStyles.Root>
+    <ChatStyles.Root>
+      <motion.div
+        id="chat-motion"
+        transition={{ duration: .5 }}
+        initial={theme.smallChat ? ChatStyles.PageTransition.InitialSmall : ChatStyles.PageTransition.Initial}
+        animate={theme.smallChat ? ChatStyles.PageTransition.EnterSmall : ChatStyles.PageTransition.Enter}
+        exit={theme.smallChat ? ChatStyles.PageTransition.ExitSmall : ChatStyles.PageTransition.Exit}>
         <ChatStyles.Container>
           <ChatStyles.MessagesContainer id="message-continer">
             <ChatStyles.Messages>
@@ -112,9 +119,8 @@ const ChatComponent = ({chatInit}: Props) => {
             </ChatStyles.Form>
           </ChatStyles.InputContainer>
         </ChatStyles.Container>
-      </ChatStyles.Root>
-    </motion.div>
-
+      </motion.div>
+    </ChatStyles.Root>
   );
 };
 
