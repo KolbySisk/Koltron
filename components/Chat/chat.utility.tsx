@@ -1,8 +1,11 @@
 import _ from 'lodash';
 import axios from 'axios';
+import io from 'socket.io-client';
 import { messages } from './messages';
 import { Message, MessageType, ChatTopic, Option } from './chat.types';
 import { ChatContext } from './chat.machine';
+
+const socket = io();
 
 export const getNextMessage = async (context: ChatContext): Promise<Message | undefined> => {
   const lastMessage: Message | undefined = _.last(context.messages);
@@ -14,6 +17,8 @@ export const getNextMessage = async (context: ChatContext): Promise<Message | un
     !lastMessage.option &&
     !lastMessage.answer
   ) {
+    if (lastMessage.action) lastMessage.action(context);
+
     return {
       id: 'developing-brain',
       type: MessageType.koltron,
@@ -89,6 +94,7 @@ export const inputToMessage = (context: ChatContext, inputText: string): Message
     order: !lastMessage.finish ? lastMessage.order : null,
     logic: !lastMessage.finish ? lastMessage.logic : null,
     content: <p>{inputText}</p>,
+    action: (context) => sendMessageToSlack(context)
   };
 };
 
@@ -102,7 +108,23 @@ export const optionToMessage = (option: Option): Message => {
   };
 };
 
-export const sendContactMessage = (context: ChatContext) => {
+export const getPlaceholder = (context: ChatContext): string => {
+  const lastMessage: Message = _.last(context.messages);
+
+  if (lastMessage?.id === `${ChatTopic.contact}-1`) return 'Enter your email';
+  if (lastMessage?.id === `${ChatTopic.contact}-2`) return 'Enter your message for Kolby';
+
+  return 'Send Koltron a message';
+};
+
+// Consider sending messages through socket.io
+export const sendMessageToSlack = (context: ChatContext) => {
+  const message: Message = _.last(context.messages).content.props.children;
+
+  socket.emit('message', message);
+};
+
+export const sendContactMessageToSlack = (context: ChatContext) => {
   const answers = context.messages.filter(m => m.topic === ChatTopic.contact && m.answer);
   const email = answers[answers.length - 2].content.props.children;
   const message = answers[answers.length - 1].content.props.children;
@@ -111,13 +133,4 @@ export const sendContactMessage = (context: ChatContext) => {
     email,
     message,
   });
-};
-
-export const getPlaceholder = (context: ChatContext): string => {
-  const lastMessage: Message = _.last(context.messages);
-
-  if (lastMessage?.id === `${ChatTopic.contact}-1`) return 'Enter your email';
-  if (lastMessage?.id === `${ChatTopic.contact}-2`) return 'Enter your message for Kolby';
-
-  return 'Send Koltron a message';
 };

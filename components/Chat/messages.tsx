@@ -1,5 +1,5 @@
 import { Message, MessageType, ChatTopic } from './chat.types';
-import { sendContactMessage } from './chat.utility';
+import { sendContactMessageToSlack } from './chat.utility';
 import { ChatContext } from './chat.machine';
 
 export const messages: Message[] = [];
@@ -95,7 +95,7 @@ messages.push({
   delay: 600,
   content: <p>I sent him your message via Slack.</p>,
   action: (context: ChatContext) => {
-    sendContactMessage(context);
+    sendContactMessageToSlack(context);
   },
 });
 

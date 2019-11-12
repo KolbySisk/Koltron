@@ -22,8 +22,11 @@
 - Installed `emotion-theming`: https://emotion.sh/docs/theming
 - Installed `react-scroll`: https://github.com/fisshy/react-scroll
 - Installed `framer-motion`: https://github.com/framer/motion
+- Installed `socket.io`: https://medium.com/@markcolling/integrating-socket-io-with-next-js-33c4c435065e
 
 ## Topics of interest
 
 - Xstate
 - Combining Emotion and Framer Motion
+- SWR and context
+- Configuring socket.io in next.js

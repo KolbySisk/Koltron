@@ -1,6 +1,4 @@
-const { WebClient } = require('@slack/web-api');
-
-const slackToken = process.env.SLACK_TOKEN;
+import Slack from '../../server/slack';
 
 export default (req, res) => {
   const {
@@ -9,16 +7,9 @@ export default (req, res) => {
   } = req;
 
   if (method === 'POST') {
-    const token = slackToken;
-    const web = new WebClient(token);
-    const conversationId = 'C0AT2K09K';
-
     (async () => {
       try {
-        await web.chat.postMessage({
-          channel: conversationId,
-          text: `${email} says: ${message}`,
-        });
+        await Slack.Send(`${email} says: ${message}`);
       } catch (error) {
         res.status(500).json({ message: 'Error sending message.' });
       }
