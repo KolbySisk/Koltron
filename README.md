@@ -22,6 +22,7 @@
 - Installed `emotion-theming`: https://emotion.sh/docs/theming
 - Installed `react-scroll`: https://github.com/fisshy/react-scroll
 - Installed `framer-motion`: https://github.com/framer/motion
+- Configured custom server: https://nextjs.org/docs#custom-server-and-routing
 - Installed `socket.io`: https://medium.com/@markcolling/integrating-socket-io-with-next-js-33c4c435065e
 
 ## Topics of interest
@@ -30,3 +31,4 @@
 - Combining Emotion and Framer Motion
 - SWR and context
 - Configuring socket.io in next.js
+- Slack integration: Bots, Events, Validating Slack request

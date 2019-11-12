@@ -1,6 +1,5 @@
 const { WebClient } = require('@slack/web-api');
-const token = process.env.SLACK_TOKEN;
-const slackClient = new WebClient(token);
+const slackClient = new WebClient(process.env.SLACK_TOKEN);
 const channelId = 'C0AT2K09K';
 
 module.exports = {
