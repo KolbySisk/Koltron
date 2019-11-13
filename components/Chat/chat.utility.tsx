@@ -5,7 +5,7 @@ import { messages } from './messages';
 import { Message, MessageType, ChatTopic, Option } from './chat.types';
 import { ChatContext } from './chat.machine';
 
-const socket = io();
+export const socket = io();
 
 export const getNextMessage = async (context: ChatContext): Promise<Message | undefined> => {
   const lastMessage: Message | undefined = _.last(context.messages);
@@ -66,7 +66,7 @@ export const getNextMessage = async (context: ChatContext): Promise<Message | un
 export const getMessagesWithNextMessage = async (
   context: ChatContext,
   nextMessage: Message
-): Promise<Message[]> => {
+): Promise<Message[]> => {  
   const newMessages: Message[] = [...context.messages];
   newMessages.push(nextMessage);
 
@@ -133,4 +133,13 @@ export const sendContactMessageToSlack = (context: ChatContext) => {
     email,
     message,
   });
+};
+
+export const slackMessageToMessage = (slackMessage: string): Message => {
+  return {
+    id: 'slack-message',
+    topic: ChatTopic.chat,
+    type: MessageType.koltron,
+    content: <p>{slackMessage}</p>,
+  };
 };

@@ -5,12 +5,15 @@ import { useTheme } from 'emotion-theming';
 import { animateScroll as scroll } from "react-scroll";
 import { motion } from 'framer-motion';
 import _ from 'lodash';
+import {socket} from './chat.utility';
 import * as ChatStyles from './chat.styles';
 import { createChatMachine, ChatEventType } from './chat.machine';
 import { Message, Option } from './chat.types';
-import { inputToMessage, getMessagesWithUserMessage, optionToMessage, getPlaceholder } from './chat.utility';
+import { inputToMessage, getMessagesWithUserMessage, optionToMessage, getPlaceholder, slackMessageToMessage, getMessagesWithNextMessage } from './chat.utility';
 import Button from '../Button';
 import { options } from './options';
+
+let messages;
 
 const ChatComponent = ({chatInit}: Props) => {
   const chatMachine = useMemo(() => createChatMachine(), []);
@@ -18,6 +21,26 @@ const ChatComponent = ({chatInit}: Props) => {
   const [inputValue, setInputValue] = useState('');
   const textInput = useRef(null);
   const theme: any = useTheme();
+
+  useEffect(() => {
+    socket.on("message", async newMessage => {
+      const message: Message = slackMessageToMessage(newMessage);
+      const newMessages: Message[] = [...messages];
+      newMessages.push(message);
+
+      send({
+        type: ChatEventType.talk,
+        messages: newMessages,
+      });
+    });
+    return () => {
+      socket.off("message");
+    };
+  }, []);
+
+  useEffect(() => {
+    messages = current.context.messages;
+  }, [current.context.messages]);
 
   useEffect(() => {
     if(chatInit) send(ChatEventType.init);
