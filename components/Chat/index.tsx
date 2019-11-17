@@ -1,29 +1,41 @@
-import { useEffect, useMemo, FormEvent, useState, useRef } from 'react';
+import { useEffect, useMemo, FormEvent, useState, useRef, useContext } from 'react';
+import { useRouter } from 'next/router';
 import { MdMoreHoriz, MdArrowUpward } from 'react-icons/md';
 import { useMachine } from '@xstate/react';
 import { useTheme } from 'emotion-theming';
-import { animateScroll as scroll } from "react-scroll";
-import { motion } from 'framer-motion';
+import { animateScroll as scroll } from 'react-scroll';
+import { AnimatePresence } from 'framer-motion';
 import _ from 'lodash';
-import {socket} from './chat.utility';
+import { socket } from './chat.utility';
 import * as ChatStyles from './chat.styles';
 import { createChatMachine, ChatEventType } from './chat.machine';
 import { Message, Option } from './chat.types';
-import { inputToMessage, getMessagesWithUserMessage, optionToMessage, getPlaceholder, slackMessageToMessage, getMessagesWithNextMessage } from './chat.utility';
+import {
+  inputToMessage,
+  getMessagesWithUserMessage,
+  optionToMessage,
+  getPlaceholder,
+  slackMessageToMessage,
+} from './chat.utility';
 import Button from '../Button';
+import ChatToggleButton from '../ChatToggleButton';
 import { options } from './options';
 
 let messages;
 
-const ChatComponent = ({chatInit}: Props) => {
+const ChatComponent = ({ chatInit }: Props) => {
+  const router = useRouter();
   const chatMachine = useMemo(() => createChatMachine(), []);
   const [current, send] = useMachine(chatMachine);
+  const [initialRoute, setInitialRoute] = useState(null);
   const [inputValue, setInputValue] = useState('');
   const textInput = useRef(null);
   const theme: any = useTheme();
 
   useEffect(() => {
-    socket.on("message", async newMessage => {
+    setInitialRoute(router.pathname);
+
+    socket.on('message', async newMessage => {
       const message: Message = slackMessageToMessage(newMessage);
       const newMessages: Message[] = [...messages];
       newMessages.push(message);
@@ -34,7 +46,7 @@ const ChatComponent = ({chatInit}: Props) => {
       });
     });
     return () => {
-      socket.off("message");
+      socket.off('message');
     };
   }, []);
 
@@ -43,21 +55,20 @@ const ChatComponent = ({chatInit}: Props) => {
   }, [current.context.messages]);
 
   useEffect(() => {
-    if(chatInit) send(ChatEventType.init);
+    if (chatInit) send(ChatEventType.init);
   }, [chatInit]);
 
   useEffect(() => {
-    if(theme.smallChat){
+    if (theme.smallChat) {
       scroll.scrollToBottom({
-        containerId: "message-continer",
+        containerId: 'message-continer',
         duration: 100,
-        delay: 0
+        delay: 0,
       });
-    }
-    else{
-      scroll.scrollToBottom({duration: 1000, delay: 0});
+    } else {
+      scroll.scrollToBottom({ duration: 1000, delay: 0 });
       setTimeout(() => {
-        textInput.current.focus();
+        textInput?.current?.focus();
       });
     }
   }, [current.context.messages]);
@@ -88,61 +99,64 @@ const ChatComponent = ({chatInit}: Props) => {
     }
   };
 
-  
-  // animation controls: https://www.framer.com/api/motion/animation/#animation-controls 
-  // variants: https://www.framer.com/api/motion/animation/#variants
+  const pageExiting = () => router.pathname !== initialRoute;
+
   return (
     <ChatStyles.Root>
-      <motion.div
-        id="chat-motion"
-        transition={{ duration: .5 }}
-        initial={theme.smallChat ? ChatStyles.PageTransition.InitialSmall : ChatStyles.PageTransition.Initial}
-        animate={theme.smallChat ? ChatStyles.PageTransition.EnterSmall : ChatStyles.PageTransition.Enter}
-        exit={theme.smallChat ? ChatStyles.PageTransition.ExitSmall : ChatStyles.PageTransition.Exit}>
-        <ChatStyles.Container>
-          <ChatStyles.MessagesContainer id="message-continer">
-            <ChatStyles.Messages>
-              {current.context.messages.map((message: Message, index: number) => (
-                  <ChatStyles.MessageContainer key={index}>
-                    <ChatStyles.Message type={message.type}>{message.content}</ChatStyles.Message>
-                  </ChatStyles.MessageContainer>
-                ))}
-              {current.context.typing && (
-                <ChatStyles.MessageContainer>
-                  <ChatStyles.LoadingMessage>
-                    <MdMoreHoriz size="2.5em" />
-                  </ChatStyles.LoadingMessage>
-                </ChatStyles.MessageContainer>
-              )}
-            </ChatStyles.Messages>
-          </ChatStyles.MessagesContainer>
-          <ChatStyles.InputContainer>
-            <ChatStyles.Options>
-              {options?.map((option: Option) => (
-                <Button
-                  key={option.id}
-                  callback={(event: MouseEvent) => optionClicked(option, event)}
-                  disabled={current.value !== 'listening'}>
-                  {option.text}
-                </Button>
-              ))}
-            </ChatStyles.Options>
-            <ChatStyles.Form onSubmit={formSubmit}>
-              <ChatStyles.Input
-                type="text"
-                placeholder={getPlaceholder(current.context)}
-                value={inputValue}
-                onChange={(event: any) => setInputValue(event.target.value)}
-                disabled={current.value !== 'listening'}
-                ref={textInput}
-              />
-              <Button type="submit" disabled={current.value !== 'listening'}>
-                <MdArrowUpward size="2em" />
-              </Button>
-            </ChatStyles.Form>
-          </ChatStyles.InputContainer>
-        </ChatStyles.Container>
-      </motion.div>
+      <ChatStyles.Container>
+        <AnimatePresence>
+          {!pageExiting() && (
+            <ChatToggleButton theme={theme}/>
+          )}
+        </AnimatePresence>
+        <AnimatePresence>
+          {!pageExiting() && initialRoute === '/' && (
+            <ChatStyles.ChatContainer>
+              <ChatStyles.MessagesContainer id="message-continer">
+                <ChatStyles.Messages>
+                  {current.context.messages.map((message: Message, index: number) => (
+                    <ChatStyles.MessageContainer key={index}>
+                      <ChatStyles.Message type={message.type}>{message.content}</ChatStyles.Message>
+                    </ChatStyles.MessageContainer>
+                  ))}
+                  {current.context.typing && (
+                    <ChatStyles.MessageContainer>
+                      <ChatStyles.LoadingMessage>
+                        <MdMoreHoriz size="2.5em" />
+                      </ChatStyles.LoadingMessage>
+                    </ChatStyles.MessageContainer>
+                  )}
+                </ChatStyles.Messages>
+              </ChatStyles.MessagesContainer>
+              <ChatStyles.InputContainer>
+                <ChatStyles.Options>
+                  {options.map((option: Option) => (
+                    <Button
+                      key={option.id}
+                      callback={(event: MouseEvent) => optionClicked(option, event)}
+                      disabled={current.value !== 'listening'}>
+                      {option.text}
+                    </Button>
+                  ))}
+                </ChatStyles.Options>
+                <ChatStyles.Form onSubmit={formSubmit}>
+                  <ChatStyles.Input
+                    type="text"
+                    placeholder={getPlaceholder(current.context)}
+                    value={inputValue}
+                    onChange={(event: any) => setInputValue(event.target.value)}
+                    disabled={current.value !== 'listening'}
+                    ref={textInput}
+                  />
+                  <Button type="submit" disabled={current.value !== 'listening'}>
+                    <MdArrowUpward size="2em" />
+                  </Button>
+                </ChatStyles.Form>
+              </ChatStyles.InputContainer>
+            </ChatStyles.ChatContainer>
+          )}
+        </AnimatePresence>
+      </ChatStyles.Container>
     </ChatStyles.Root>
   );
 };

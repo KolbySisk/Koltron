@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { motion } from 'framer-motion';
 import { MessageType } from './chat.types';
 import {
   ContainerStyles,
@@ -9,43 +10,25 @@ import {
   forSides,
   forTopLeftRight,
   forBottomAndLeft,
-  spaced,
 } from '../../styles';
 
-export const PageTransition = {
-  Initial: {
-    opacity: 0,
-  },
-
-  Enter: {
-    opacity: 1,
-  },
-
-  Exit: {
-    opacity: 0,
-  },
-
-  InitialSmall: {},
-
-  EnterSmall: {},
-
-  ExitSmall: {},
-};
-
-export const Root: any = styled.section((props: any) => [
-  ContainerStyles,
-  {
-    '#chat-motion': props.theme.smallChat && {
-      position: 'fixed',
-      maxWidth: '100%',
-      width: 500,
-      bottom: spaced(2),
-      right: spaced(2),
-    },
-  },
-]);
+export const Root: any = styled.section((props: any) => [ContainerStyles]);
 
 export const Container = styled.section();
+
+export const ChatContainer: any = styled(motion.div)({
+  position: 'relative',
+  overflow: 'hidden',
+  marginLeft: 'auto',
+  opacity: 0,
+});
+
+ChatContainer.defaultProps = {
+  initial: { opacity: 0, clipPath: 'circle(200% at bottom right)' },
+  animate: { opacity: 1 },
+  exit: { opacity: 0, clipPath: 'circle(5% at bottom right)' },
+  transition: { duration: 0.5 },
+};
 
 export const MessagesContainer = styled.div((props: any) => [
   {
@@ -53,10 +36,6 @@ export const MessagesContainer = styled.div((props: any) => [
     borderRadius: forTopAndRight(withPx(Constant.borderRadius)),
     padding: forTopLeftRight(withPx(Constant.baseSpacing * 3)),
     paddingBottom: withPx(Constant.baseSpacing),
-  },
-  props.theme.smallChat && {
-    height: 300,
-    overflow: 'auto',
   },
 ]);
 

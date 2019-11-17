@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
-import { ContainerStyles, spaced, withPx } from '../../styles';
+import { ContainerStyles, spaced, withPx, Constant } from '../../styles';
+import { motion } from 'framer-motion';
 
 const bgImage = require('../../public/images/hero-bg.jpg?webp&size=1400');
 const bgTransitionImage = require('../../public/images/bg-transition.png');
@@ -9,6 +10,8 @@ export const Root = styled.section({
   backgroundSize: '100%',
   backgroundRepeat: 'no-repeat',
   position: 'relative',
+  marginTop: -Constant.verticalMargin,
+  paddingTop: Constant.verticalMargin,
   ':after': {
     content: '""',
     height: '200px',
@@ -23,15 +26,13 @@ export const Root = styled.section({
   },
 });
 
-export const Container = styled.div([ContainerStyles], {
-  paddingTop: withPx(spaced(4)),
-});
+export const Container = styled.div([ContainerStyles]);
 
-export const Header = styled.header({});
+export const Header = styled.header();
 
 export const Logo = styled.div({ width: 80 });
 
-export const ContentContainer = styled.div((props: any) => [
+export const ContentContainer: any = styled(motion.div)([
   {
     paddingTop: withPx(spaced(4)),
     paddingBottom: withPx(spaced(8)),
@@ -39,10 +40,14 @@ export const ContentContainer = styled.div((props: any) => [
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  !props.theme.home && {
-    opacity: 0,
-  },
 ]);
+
+ContentContainer.defaultProps = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  exit: { opacity: 0 },
+  transition: { duration: 0.6 },
+};
 
 export const LeftContent = styled.div({
   flex: 0,

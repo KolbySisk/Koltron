@@ -29,6 +29,7 @@
 
 - Xstate
 - Combining Emotion and Framer Motion
+- Animaing page transition with Framer Motion
 - SWR and context
 - Configuring socket.io in next.js
 - Slack integration: Bots, Events, Validating Slack request

@@ -7,11 +7,11 @@ export const ContainerStyles = css([
   {
     width: '100%',
     maxWidth: Constant.containerWidth,
-    padding: forSides(withPx(Constant.marginWidth)),
+    padding: forSides(withPx(Constant.sideMargin)),
     margin: forSides('auto'),
     boxSizing: 'border-box',
   },
   MediaQuery(BreakPoint.small, {
-    padding: forSides(withPx(Constant.marginWidth / 4)),
+    padding: forSides(withPx(Constant.smallSideMargin)),
   }),
 ]);
