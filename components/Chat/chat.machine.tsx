@@ -13,7 +13,6 @@ import { talk, think, read } from './chat.service';
 
 export interface ChatStateSchema {
   states: {
-    idle: {};
     thinking: {};
     talking: {};
     reading: {};
@@ -32,7 +31,6 @@ export interface ChatStateSchema {
  */
 
 export enum ChatEventType {
-  init = 'INIT',
   think = 'THINK',
   talk = 'TALK',
   listen = 'LISTEN',
@@ -40,7 +38,6 @@ export enum ChatEventType {
 }
 
 export type ChatEvent =
-  | { type: ChatEventType.init }
   | { type: ChatEventType.think }
   | { type: ChatEventType.listen }
   | { type: ChatEventType.talk; messages: Message[] }
@@ -52,86 +49,79 @@ export interface ChatContext {
   typing: boolean;
 }
 
-export const createChatMachine = () =>
-  Machine<ChatContext, ChatStateSchema, ChatEvent>({
-    id: 'chat',
-    initial: 'idle',
-    context: {
-      messages: [],
-      typing: false,
-    },
-    states: {
-      idle: {},
-
-      thinking: {
-        invoke: {
-          id: 'thinking',
-          src: (context: ChatContext) => async callback => {
-            think(context, callback);
-          },
+export const chatMachine = Machine<ChatContext, ChatStateSchema, ChatEvent>({
+  id: 'chat',
+  initial: 'listening',
+  context: {
+    messages: [],
+    typing: false,
+  },
+  states: {
+    thinking: {
+      invoke: {
+        id: 'thinking',
+        src: (context: ChatContext) => async callback => {
+          think(context, callback);
         },
       },
-
-      talking: {
-        invoke: {
-          id: 'talking',
-          src: (context: ChatContext) => async callback => {
-            talk(context, callback);
-          },
+    },
+    talking: {
+      invoke: {
+        id: 'talking',
+        src: (context: ChatContext) => async callback => {
+          talk(context, callback);
         },
       },
-
-      reading: {
-        invoke: {
-          id: 'reading',
-          src: (context: ChatContext) => async callback => {
-            read(context, callback);
-          },
+    },
+    reading: {
+      invoke: {
+        id: 'reading',
+        src: (context: ChatContext) => async callback => {
+          read(context, callback);
         },
       },
-
-      listening: {},
-      failed: {},
     },
-    on: {
-      INIT: { target: 'thinking' },
-      THINK: {
-        target: 'talking',
-        actions: [
-          assign({
-            typing: true,
-          }),
-        ],
-      },
-      TALK: {
-        target: 'thinking',
-        actions: [
-          assign({
-            messages: (context: ChatContext, event: any) => event.messages,
-          }),
-          assign({
-            typing: false,
-          }),
-        ],
-      },
-      LISTEN: {
-        target: 'listening',
-        actions: [
-          assign({
-            typing: false,
-          }),
-        ],
-      },
-      READ: {
-        target: 'reading',
-        actions: [
-          assign({
-            messages: (context: ChatContext, event: any) => event.messages,
-          }),
-        ],
-      },
+    listening: {},
+    failed: {},
+  },
+  on: {
+    THINK: {
+      target: 'talking',
+      actions: [
+        assign({
+          typing: true,
+        }),
+      ],
     },
-  });
+    TALK: {
+      target: 'thinking',
+      actions: [
+        assign({
+          messages: (context: ChatContext, event: any) => event.messages,
+        }),
+        assign({
+          typing: false,
+        }),
+      ],
+    },
+    LISTEN: {
+      target: 'listening',
+      actions: [
+        assign({
+          typing: false,
+        }),
+      ],
+    },
+    READ: {
+      target: 'reading',
+      actions: [
+        assign({
+          messages: (context: ChatContext, event: any) => event.messages,
+        }),
+      ],
+    },
+  },
+});
 
 /**
  * TODO:

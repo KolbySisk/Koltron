@@ -53,6 +53,7 @@ messages.push({
   question: true,
   delay: 400,
   content: <p>What's your email?</p>,
+  placeholder: 'Enter your email',
   logic: async (email: string): Promise<string> => {
     const EmailValidator = await import('email-validator');
     return EmailValidator.validate(email)
@@ -69,6 +70,7 @@ messages.push({
   question: true,
   delay: 600,
   content: <p>What message would you like to send Kolby?</p>,
+  placeholder: 'Enter your message for Kolby',
 });
 
 messages.push({

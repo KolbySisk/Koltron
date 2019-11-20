@@ -9,13 +9,13 @@ export const talk = async (context: ChatContext, callback: Function) => {
 
   setTimeout(async () => {
     if (nextMessage) {
-      const messages: Message[] = await getMessagesWithNextMessage(context, nextMessage);
+      const messages: Message[] = getMessagesWithNextMessage(context, nextMessage);
 
       callback({ type: ChatEventType.talk, messages });
     } else {
       callback({ type: ChatEventType.listen });
     }
-  }, nextMessage.delay || defaultDelay);
+  }, nextMessage?.delay || defaultDelay);
 };
 
 export const think = async (context: ChatContext, callback: Function) => {

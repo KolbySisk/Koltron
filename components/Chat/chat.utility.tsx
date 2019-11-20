@@ -7,6 +7,11 @@ import { ChatContext } from './chat.machine';
 
 export const socket = io();
 
+/**
+ * Given the context, will return the next message, or undefined if Koltron is waiting for an answer
+ * Warning: Has a lot of side effects and should be refactored.
+ */
+
 export const getNextMessage = async (context: ChatContext): Promise<Message | undefined> => {
   const lastMessage: Message | undefined = _.last(context.messages);
 
@@ -20,7 +25,7 @@ export const getNextMessage = async (context: ChatContext): Promise<Message | un
     if (lastMessage.action) lastMessage.action(context);
 
     return {
-      id: 'developing-brain',
+      id: 'DEVELOPING-BRAIN',
       type: MessageType.koltron,
       delay: 600,
       content: (
@@ -45,31 +50,44 @@ export const getNextMessage = async (context: ChatContext): Promise<Message | un
       }
     }
 
+    /**
+     * Finally, get and return the next message
+     * Next message is based on the topic and last message.order
+     */
     const topic: ChatTopic = lastMessage ? lastMessage.topic : ChatTopic.intro;
 
     let lastMessageOrder: number = lastMessage ? lastMessage.order : 0;
     lastMessageOrder = lastMessageOrder || 0;
 
-    const topicMessages: Message[] = await messages.filter(m => m.topic === topic);
-    const message: Message | undefined = await topicMessages.find(
-      m => m.order === lastMessageOrder + 1
-    );
+    const topicMessages: Message[] = messages.filter(m => m.topic === topic);
+    const message: Message | undefined = topicMessages.find(m => m.order === lastMessageOrder + 1);
 
-    if (!message) return;
-
-    if (message.action) message.action(context);
+    // if next message has an action, call it
+    if (message?.action) message.action(context);
 
     return message;
   }
 };
 
-export const getMessagesWithNextMessage = async (
-  context: ChatContext,
-  nextMessage: Message
-): Promise<Message[]> => {  
-  const newMessages: Message[] = [...context.messages];
-  newMessages.push(nextMessage);
+export const getCurrentMessagesFromContextOrArray = (context: ChatContext): Message[] => {
+  return context && context.messages ? context.messages : [];
+};
 
+export const addNewMessageToCurrentContext = (
+  context: ChatContext,
+  newMessage: Message
+): Message[] => {
+  const currentMessages: Message[] = getCurrentMessagesFromContextOrArray(context);
+  const messages: Message[] = [...currentMessages];
+  messages.push(newMessage);
+  return messages;
+};
+
+export const getMessagesWithNextMessage = (
+  context: ChatContext,
+  newMessage: Message
+): Message[] => {
+  const newMessages: Message[] = addNewMessageToCurrentContext(context, newMessage);
   return newMessages;
 };
 
@@ -77,9 +95,7 @@ export const getMessagesWithUserMessage = (
   context: ChatContext,
   userMessage: Message
 ): Message[] => {
-  const newMessages: Message[] = [...context.messages];
-  newMessages.push(userMessage);
-
+  const newMessages: Message[] = addNewMessageToCurrentContext(context, userMessage);
   return newMessages;
 };
 
@@ -87,14 +103,14 @@ export const inputToMessage = (context: ChatContext, inputText: string): Message
   const lastMessage: Message = _.last(context.messages);
 
   return {
-    id: 'user-message',
+    id: 'USER-MESSAGE',
     type: MessageType.user,
     answer: !lastMessage.finish ? lastMessage.question : false,
     topic: !lastMessage.finish ? lastMessage.topic : null,
     order: !lastMessage.finish ? lastMessage.order : null,
     logic: !lastMessage.finish ? lastMessage.logic : null,
     content: <p>{inputText}</p>,
-    action: (context) => sendMessageToSlack(context)
+    action: context => sendMessageToSlack(context),
   };
 };
 
@@ -110,34 +126,32 @@ export const optionToMessage = (option: Option): Message => {
 
 export const getPlaceholder = (context: ChatContext): string => {
   const lastMessage: Message = _.last(context.messages);
+  const defaultPlaceholder: string = 'Send Koltron a message';
 
-  if (lastMessage?.id === `${ChatTopic.contact}-1`) return 'Enter your email';
-  if (lastMessage?.id === `${ChatTopic.contact}-2`) return 'Enter your message for Kolby';
-
-  return 'Send Koltron a message';
+  return lastMessage && lastMessage.placeholder ? lastMessage.placeholder : defaultPlaceholder;
 };
 
-// Consider sending messages through socket.io
 export const sendMessageToSlack = (context: ChatContext) => {
   const message: Message = _.last(context.messages).content.props.children;
-
   socket.emit('message', message);
 };
 
 export const sendContactMessageToSlack = (context: ChatContext) => {
-  const answers = context.messages.filter(m => m.topic === ChatTopic.contact && m.answer);
-  const email = answers[answers.length - 2].content.props.children;
-  const message = answers[answers.length - 1].content.props.children;
+  const answers: Message[] = context.messages.filter(
+    m => m.topic === ChatTopic.contact && m.answer
+  );
+  const email: string = answers[answers.length - 2].content.props.children;
+  const messageText: string = answers[answers.length - 1].content.props.children;
 
   axios.post('/api/contact', {
     email,
-    message,
+    message: messageText,
   });
 };
 
 export const slackMessageToMessage = (slackMessage: string): Message => {
   return {
-    id: 'slack-message',
+    id: 'SLACK-MESSAGE',
     topic: ChatTopic.chat,
     type: MessageType.koltron,
     content: <p>{slackMessage}</p>,

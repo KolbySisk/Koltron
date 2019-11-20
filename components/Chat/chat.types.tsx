@@ -28,6 +28,7 @@ export enum MessageType {
  * `type` determins how the message is styled. (Sent vs Received styles).
  * `delay` is pause before sending the message.
  * `option` indicates that the message was generated from an `Option`.
+ * `placeholder` is used as the text input placeholder.
  * `question` used to tell Koltron to wait for an answer.
  * `answer` indicates that the message is an answer to a previously asked question.
  * `finish` indicates that a chain of questioning has ended.
@@ -43,6 +44,7 @@ export interface Message {
   topic?: ChatTopic;
   delay?: number;
   option?: boolean;
+  placeholder?: string;
   question?: boolean;
   answer?: boolean;
   finish?: boolean;

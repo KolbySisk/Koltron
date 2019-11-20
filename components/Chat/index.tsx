@@ -1,15 +1,18 @@
-import { useEffect, useMemo, FormEvent, useState, useRef, useContext } from 'react';
+import { useEffect, FormEvent, useState, useRef, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { MdMoreHoriz, MdArrowUpward } from 'react-icons/md';
-import { useMachine } from '@xstate/react';
 import { useTheme } from 'emotion-theming';
 import { animateScroll as scroll } from 'react-scroll';
 import { AnimatePresence } from 'framer-motion';
 import _ from 'lodash';
 import { socket } from './chat.utility';
 import * as ChatStyles from './chat.styles';
-import { createChatMachine, ChatEventType } from './chat.machine';
+import { ChatEventType } from './chat.machine';
 import { Message, Option } from './chat.types';
+import Button from '../Button';
+import ChatToggleButton from '../ChatToggleButton';
+import { options } from './options';
+import ChatServiceContext from './chat.context';
 import {
   inputToMessage,
   getMessagesWithUserMessage,
@@ -17,20 +20,19 @@ import {
   getPlaceholder,
   slackMessageToMessage,
 } from './chat.utility';
-import Button from '../Button';
-import ChatToggleButton from '../ChatToggleButton';
-import { options } from './options';
 
+// TODO: Refactor to ref
 let messages;
 
 const ChatComponent = ({ chatInit }: Props) => {
   const router = useRouter();
-  const chatMachine = useMemo(() => createChatMachine(), []);
-  const [current, send] = useMachine(chatMachine);
   const [initialRoute, setInitialRoute] = useState(null);
   const [inputValue, setInputValue] = useState('');
   const textInput = useRef(null);
   const theme: any = useTheme();
+  const chatService = useContext(ChatServiceContext);
+  // TODO: custom hook?
+  const { chatMachineState, chatMachineSend } = chatService;
 
   useEffect(() => {
     setInitialRoute(router.pathname);
@@ -40,7 +42,7 @@ const ChatComponent = ({ chatInit }: Props) => {
       const newMessages: Message[] = [...messages];
       newMessages.push(message);
 
-      send({
+      chatMachineSend({
         type: ChatEventType.talk,
         messages: newMessages,
       });
@@ -51,14 +53,16 @@ const ChatComponent = ({ chatInit }: Props) => {
   }, []);
 
   useEffect(() => {
-    messages = current.context.messages;
-  }, [current.context.messages]);
-
-  useEffect(() => {
-    if (chatInit) send(ChatEventType.init);
+    if (chatInit) chatMachineSend(ChatEventType.talk);
   }, [chatInit]);
 
   useEffect(() => {
+    messages = chatMachineState.context.messages;
+
+    /**
+     * Testing scrolling ux ideas
+     * TODO: Move to utility when finalized
+     */
     if (theme.smallChat) {
       scroll.scrollToBottom({
         containerId: 'message-continer',
@@ -71,16 +75,16 @@ const ChatComponent = ({ chatInit }: Props) => {
         textInput?.current?.focus();
       });
     }
-  }, [current.context.messages]);
+  }, [chatMachineState.context.messages]);
 
   const optionClicked = (option: Option, event: MouseEvent) => {
     event.preventDefault();
 
     const userMessage: Message = optionToMessage(option);
 
-    send({
+    chatMachineSend({
       type: ChatEventType.read,
-      messages: getMessagesWithUserMessage(current.context, userMessage),
+      messages: getMessagesWithUserMessage(chatMachineState.context, userMessage),
     });
   };
 
@@ -88,11 +92,11 @@ const ChatComponent = ({ chatInit }: Props) => {
     event.preventDefault();
 
     if (inputValue.length) {
-      const userMessage: Message = inputToMessage(current.context, inputValue);
+      const userMessage: Message = inputToMessage(chatMachineState.context, inputValue);
 
-      send({
+      chatMachineSend({
         type: ChatEventType.read,
-        messages: getMessagesWithUserMessage(current.context, userMessage),
+        messages: getMessagesWithUserMessage(chatMachineState.context, userMessage),
       });
 
       setInputValue('');
@@ -104,22 +108,18 @@ const ChatComponent = ({ chatInit }: Props) => {
   return (
     <ChatStyles.Root>
       <ChatStyles.Container>
-        <AnimatePresence>
-          {!pageExiting() && (
-            <ChatToggleButton theme={theme}/>
-          )}
-        </AnimatePresence>
+        <AnimatePresence>{!pageExiting() && <ChatToggleButton theme={theme} />}</AnimatePresence>
         <AnimatePresence>
           {!pageExiting() && initialRoute === '/' && (
             <ChatStyles.ChatContainer>
               <ChatStyles.MessagesContainer id="message-continer">
                 <ChatStyles.Messages>
-                  {current.context.messages.map((message: Message, index: number) => (
+                  {chatMachineState?.context?.messages?.map((message: Message, index: number) => (
                     <ChatStyles.MessageContainer key={index}>
                       <ChatStyles.Message type={message.type}>{message.content}</ChatStyles.Message>
                     </ChatStyles.MessageContainer>
                   ))}
-                  {current.context.typing && (
+                  {chatMachineState?.context?.typing && (
                     <ChatStyles.MessageContainer>
                       <ChatStyles.LoadingMessage>
                         <MdMoreHoriz size="2.5em" />
@@ -130,11 +130,11 @@ const ChatComponent = ({ chatInit }: Props) => {
               </ChatStyles.MessagesContainer>
               <ChatStyles.InputContainer>
                 <ChatStyles.Options>
-                  {options.map((option: Option) => (
+                  {options?.map((option: Option) => (
                     <Button
                       key={option.id}
                       callback={(event: MouseEvent) => optionClicked(option, event)}
-                      disabled={current.value !== 'listening'}>
+                      disabled={chatMachineState.value !== 'listening'}>
                       {option.text}
                     </Button>
                   ))}
@@ -142,13 +142,13 @@ const ChatComponent = ({ chatInit }: Props) => {
                 <ChatStyles.Form onSubmit={formSubmit}>
                   <ChatStyles.Input
                     type="text"
-                    placeholder={getPlaceholder(current.context)}
+                    placeholder={getPlaceholder(chatMachineState.context)}
                     value={inputValue}
                     onChange={(event: any) => setInputValue(event.target.value)}
-                    disabled={current.value !== 'listening'}
+                    disabled={chatMachineState.value !== 'listening'}
                     ref={textInput}
                   />
-                  <Button type="submit" disabled={current.value !== 'listening'}>
+                  <Button type="submit" disabled={chatMachineState.value !== 'listening'}>
                     <MdArrowUpward size="2em" />
                   </Button>
                 </ChatStyles.Form>
